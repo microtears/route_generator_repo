@@ -5,29 +5,33 @@
 // **************************************************************************
 
 import 'package:flutter/material.dart';
-import 'second/second_page.dart';
-import 'third_page.dart';
 import 'first_page.dart';
+import 'third_page.dart';
+import 'second/second_page.dart';
 
 RouteFactory onGenerateRoute = (settings) => Map.fromEntries([
-      ..._secondPage.entries,
-      ..._customRoute.entries,
       ..._home.entries,
+      ..._customRoute.entries,
+      ..._secondPage.entries,
     ])[settings.name](settings);
 
-Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
-  'second_page': (settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => SecondPage())
-};
-Map<String, RouteFactory> _customRoute = <String, RouteFactory>{
-  'custom_route': (settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => ThirdPage())
-};
 Map<String, RouteFactory> _home = <String, RouteFactory>{
-  'home': (settings) =>
+  '/': (RouteSettings settings) =>
       MaterialPageRoute(builder: (BuildContext context) => FirstPage())
 };
+Map<String, RouteFactory> _customRoute = <String, RouteFactory>{
+  'custom_route': (RouteSettings settings) => MaterialPageRoute(
+      builder: (BuildContext context) => ThirdPage(
+            settings.arguments ?? 'defaultValue',
+            secondValue:
+                (settings.arguments as Map<String, dynamic>)['secondKey'],
+          ))
+};
+Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
+  'second_page': (RouteSettings settings) =>
+      MaterialPageRoute(builder: (BuildContext context) => SecondPage())
+};
 
-const ROUTE_SECOND_PAGE = 'second_page';
+const ROUTE_HOME = '/';
 const ROUTE_CUSTOM_ROUTE = 'custom_route';
-const ROUTE_HOME = 'home';
+const ROUTE_SECOND_PAGE = 'second_page';

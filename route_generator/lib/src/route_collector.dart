@@ -25,8 +25,9 @@ class RouteCollector extends Generator {
       if (generatedRoute) {
         final pageValues = Values();
         final isInitialRoute = annotatedElement.annotation.peek("isInitialRoute").boolValue;
+        final isAlias = annotatedElement.annotation.peek("isAlias").boolValue;
         final name = isInitialRoute ? "/" : annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
-
+        final prarms = mapPrarms(annotatedElement.annotation.peek("prarms"));
         if (isInitialRoute) {
           if (hasInitialRoute == true) {
             throw UnsupportedError("There can only be one initialization page,$name's isInitialRoute should be false");
@@ -35,9 +36,9 @@ class RouteCollector extends Generator {
         }
         routerValues.addLine(buildLine(className, generatedRoute, null, name));
         routerValues.addImport(import);
-        pageValues.addRoute(buildRoute(name, className));
+        pageValues.addRoute(buildRoute(name, className, buildRouteParam(prarms)));
         routerValues.addValues(pageValues);
-        nameValues.addLine(buildRouteName(name, false));
+        nameValues.addLine(buildRouteName(name, isAlias));
       } else {
         routerValues.addLine(buildLine(className, generatedRoute, routeFieldName, null));
         final routeGetter = annotatedElement.annotation.peek("routeGetter").objectValue as RouteGetter;
@@ -50,20 +51,56 @@ class RouteCollector extends Generator {
   }
 
   String buildLine(String className, bool generatedRoute, String routeFieldName, String routeName) =>
-      generatedRoute ? "      ..._${_formatLU2LC(routeName)}.entries," : "      ...$className.$routeFieldName.entries,";
+      generatedRoute ? "      ..._${_formatLU2LC(routeName, false)}.entries," : "      ...$className.$routeFieldName.entries,";
 
-  String buildRoute(String routeName, String routePageName) =>
-      "Map<String, RouteFactory> _${_formatLU2LC(routeName)} = <String, RouteFactory>{'${_formatLC2LU(routeName)}': (settings) => MaterialPageRoute(builder: (BuildContext context) => $routePageName())};";
+  String buildRouteParam(List<RoutePrarm> prarms) {
+    final buffer = StringBuffer();
+    if (prarms.length == 1) {
+      buffer.write(prarmToString(prarms[0]));
+    } else if (prarms.length > 1) {
+      final indexPrarms = prarms.where((value) => !value.isOptional).toList();
+      final optionalPrarms = prarms.where((value) => value.isOptional).toList()..sort();
+      indexPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
+      optionalPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
+    }
+    return buffer.toString();
+  }
+
+  List<RoutePrarm> mapPrarms(ConstantReader value) {
+    return value?.listValue
+            ?.map((value) => RoutePrarm(
+                  key: value.getField("key").toStringValue(),
+                  optionalName: value.getField("optionalName").toStringValue(),
+                  isOptional: value.getField("isOptional").toBoolValue(),
+                  type: value.getField("type").toTypeValue() as Type,
+                  defaultValue: value.getField("defaultValue").isNull ? null : value.getField("defaultValue").toStringValue(),
+                  index: value.getField("index").toIntValue(),
+                ))
+            ?.toList() ??
+        <RoutePrarm>[];
+  }
+
+  String prarmToString(RoutePrarm prarm) {
+    final defaultValue = prarm.defaultValue != null ? "?? '${prarm.defaultValue}'," : ",";
+    final value = prarm.key == null
+        ? "settings.arguments $defaultValue"
+        : "(settings.arguments as Map<String, dynamic>)['${prarm.key}'] $defaultValue";
+    final write = prarm.isOptional ? "${prarm.optionalName} : $value" : value;
+    return write;
+  }
+
+  String buildRoute(String routeName, String routePageName, String prarms) =>
+      "Map<String, RouteFactory> _${_formatLU2LC(routeName, false)} = <String, RouteFactory>{'${_formatLC2LU(routeName)}': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $routePageName($prarms))};";
 
   String buildRouteName(String routeName, bool isAlias) => isAlias
-      ? "const ROUTE_ALIAS_${_formatLC2UU(routeName)} = '${_formatLC2LU(routeName)}';"
-      : "const ROUTE_${_formatLC2UU(routeName)} = '${_formatLC2LU(routeName)}';";
+      ? "const ROUTE_ALIAS_${_formatLC2UU(routeName, false)} = '${_formatLC2LU(routeName)}';"
+      : "const ROUTE_${_formatLC2UU(routeName, false)} = '${_formatLC2LU(routeName)}';";
 }
 
-String _normalizeRouteName(String routeName) {
+String _normalizeRouteName(String routeName, [bool asRouteName = true]) {
   String result;
   if (routeName == "/")
-    result = "home";
+    result = asRouteName ? "/" : "home";
   else if (routeName[0] == "/") {
     result = routeName.replaceFirst(routeName[0], "");
   }
@@ -71,8 +108,9 @@ String _normalizeRouteName(String routeName) {
   return result;
 }
 
-String _formatLC2UU(String routeName) =>
-    format(_normalizeRouteName(routeName), CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
-String _formatLC2LU(String routeName) =>
-    format(_normalizeRouteName(routeName), CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
-String _formatLU2LC(String routeName) => format(_formatLC2LU(routeName), CaseFormat.LOWER_UNDERSCORE, CaseFormat.LOWER_CAMEL);
+String _formatLC2UU(String routeName, [bool asRouteName = true]) =>
+    format(_normalizeRouteName(routeName, asRouteName), CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
+String _formatLC2LU(String routeName, [bool asRouteName = true]) =>
+    format(_normalizeRouteName(routeName, asRouteName), CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
+String _formatLU2LC(String routeName, [bool asRouteName = true]) =>
+    format(_formatLC2LU(routeName, asRouteName), CaseFormat.LOWER_UNDERSCORE, CaseFormat.LOWER_CAMEL);
