@@ -1,0 +1,24 @@
+name: route_generator
+description: A new Flutter package project.
+version: 0.0.1
+author: microtears <microtears@gmail.com>
+homepage: https://github.com/microtears/route_generator.dart
+
+
+environment:
+  sdk: ">=2.2.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  source_gen: ^0.9.4+2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  route_annotation:
+    path: ../route_annotation
+  build_runner: ^1.5.0
+
+flutter:

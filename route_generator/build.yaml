@@ -1,0 +1,27 @@
+targets:
+  $default:
+    builders:
+      route_generator|route_builder:
+        enabled: true
+        options: { 'write': true }
+        generate_for:
+          exclude: ['**.route.dart']
+      route_generator|route_collector:
+        enabled: true
+        generate_for:
+          exclude: ['**.collector.dart']
+
+
+builders:
+  route_builder:
+    import: 'package:route_generator/builder.dart'
+    builder_factories: ['routeBuilder']
+    build_extensions: { '.dart': ['.route.dart'] }
+    auto_apply: dependents
+    build_to: source
+  route_collector:
+    import: 'package:route_generator/builder.dart'
+    builder_factories: ['routeCollector']
+    build_extensions: { '.dart': ['.collector.dart'] }
+    auto_apply: dependents
+    build_to: source

@@ -1,0 +1,3 @@
+class Router {
+  const Router();
+}
