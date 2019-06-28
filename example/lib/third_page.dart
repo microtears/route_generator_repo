@@ -11,7 +11,9 @@ class ThirdPage extends StatelessWidget {
           children: <Widget>[
             Text("SecondPage"),
             FlatButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               child: Text("Previous Page"),
             ),
           ],

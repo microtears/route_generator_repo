@@ -25,13 +25,13 @@ dependencies:
   cupertino_icons: ^0.1.2
   build_runner: ^1.5.0
   route_annotation:
-    path: ../../route_annotation
+    path: ../route_annotation
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   route_generator:
-    path: ../../route_generator
+    path: ../route_generator
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

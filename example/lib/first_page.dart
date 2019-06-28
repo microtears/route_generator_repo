@@ -1,3 +1,4 @@
+import 'package:example/app.route.dart';
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
 
@@ -11,7 +12,9 @@ class FirstPage extends StatelessWidget {
           children: <Widget>[
             Text("FirstPage"),
             FlatButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(ROUTE_SECOND_PAGE);
+              },
               child: Text("Next Page"),
             ),
           ],
