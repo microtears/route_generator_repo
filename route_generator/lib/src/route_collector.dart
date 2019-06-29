@@ -18,9 +18,9 @@ class RouteCollector extends Generator {
       final className = annotatedElement.element.displayName;
       final routeFieldName = annotatedElement.annotation.peek("routeFieldName").stringValue;
       final path = buildStep.inputId.path;
-      // final package = buildStep.inputId.package;
+      final package = buildStep.inputId.package;
       final generatedRoute = annotatedElement.annotation.peek("generatedRoute").boolValue;
-      final import = path.contains('lib/') ? path.replaceFirst('lib/', '') : path;
+      final import = path.contains('lib/') ? "package:$package/${path.replaceFirst('lib/', '')}" : path;
       routerValues.addImport(import);
       if (generatedRoute) {
         final pageValues = Values();
@@ -44,7 +44,7 @@ class RouteCollector extends Generator {
         final routeGetter = annotatedElement.annotation.peek("routeGetter").objectValue as RouteGetter;
         final route = routeGetter();
         int index = 0;
-        route.forEach((key, value) => buildRouteName(key, index++ == 0));
+        route.forEach((key, value) => nameValues.addLine(buildRouteName(key, index++ == 0)));
       }
     }
     return null;
@@ -72,8 +72,8 @@ class RouteCollector extends Generator {
                   key: value.getField("key").toStringValue(),
                   optionalName: value.getField("optionalName").toStringValue(),
                   isOptional: value.getField("isOptional").toBoolValue(),
-                  type: value.getField("type").toTypeValue() as Type,
-                  defaultValue: value.getField("defaultValue").isNull ? null : value.getField("defaultValue").toStringValue(),
+                  // type: value.getField("type").toTypeValue() as Type,
+                  // defaultValue: value.getField("defaultValue").isNull ? null : value.getField("defaultValue").toStringValue(),
                   index: value.getField("index").toIntValue(),
                 ))
             ?.toList() ??
@@ -81,7 +81,8 @@ class RouteCollector extends Generator {
   }
 
   String prarmToString(RoutePrarm prarm) {
-    final defaultValue = prarm.defaultValue != null ? "?? '${prarm.defaultValue}'," : ",";
+    // final defaultValue = prarm.defaultValue != null ? "?? '${prarm.defaultValue}'," : ",";
+    final defaultValue = ",";
     final value = prarm.key == null
         ? "settings.arguments $defaultValue"
         : "(settings.arguments as Map<String, dynamic>)['${prarm.key}'] $defaultValue";

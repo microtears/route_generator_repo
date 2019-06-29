@@ -3,15 +3,16 @@ class Values {
   Set<String> _body = {};
   Set<Values> _subValues = {};
 
-  addImport(String value) => _imports.add("import '$value';\n");
-  addLine(String value) => _body.add(value + "\n");
-  addRoute(String value) => addLine(value);
+  bool addImport(String value) => _imports.add("import '$value';\n");
+  bool addLine(String value) => _body.add(value + "\n");
+  bool addRoute(String value) => addLine(value);
 
-  addValues(Values values) => _subValues.add(values);
+  bool addValues(Values values) => _subValues.add(values);
 
-  clear() {
+  void clear([bool cascade = false]) {
     _imports.clear();
     _body.clear();
+    if (cascade) _subValues.clear();
   }
 
   _writeImport(StringBuffer buffer) {
