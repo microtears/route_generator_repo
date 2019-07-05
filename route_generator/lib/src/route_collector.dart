@@ -26,7 +26,8 @@ class RouteCollector extends Generator {
         final pageValues = Values();
         final isInitialRoute = annotatedElement.annotation.peek("isInitialRoute").boolValue;
         final isAlias = annotatedElement.annotation.peek("isAlias").boolValue;
-        final name = isInitialRoute ? "/" : annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
+        final peekName = annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
+        final name = isInitialRoute ? "/" : peekName;
         final prarms = mapPrarms(annotatedElement.annotation.peek("prarms"));
         if (isInitialRoute) {
           if (hasInitialRoute == true) {
@@ -37,6 +38,10 @@ class RouteCollector extends Generator {
         routerValues.addLine(buildLine(className, generatedRoute, null, name));
         routerValues.addImport(import);
         pageValues.addRoute(buildRoute(name, className, buildRouteParam(prarms)));
+        if (isInitialRoute) {
+          nameValues.addLine(buildHomeAliasRouteName(peekName));
+        }
+
         routerValues.addValues(pageValues);
         nameValues.addLine(buildRouteName(name, isAlias));
       } else {
@@ -92,6 +97,8 @@ class RouteCollector extends Generator {
 
   String buildRoute(String routeName, String routePageName, String prarms) =>
       "Map<String, RouteFactory> _${_formatLU2LC(routeName, false)} = <String, RouteFactory>{'${_formatLC2LU(routeName)}': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $routePageName($prarms))};";
+
+  String buildHomeAliasRouteName(String routeName) => "const ROUTE_${_formatLC2UU(routeName, false)} = '/';";
 
   String buildRouteName(String routeName, bool isAlias) => isAlias
       ? "const ROUTE_ALIAS_${_formatLC2UU(routeName, false)} = '${_formatLC2LU(routeName)}';"
