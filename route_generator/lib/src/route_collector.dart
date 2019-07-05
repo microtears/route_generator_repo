@@ -29,34 +29,37 @@ class RouteCollector extends Generator {
         final peekName = annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
         final name = isInitialRoute ? "/" : peekName;
         final prarms = mapPrarms(annotatedElement.annotation.peek("prarms"));
+        final routeVariableName = _normalizeName(name, false);
+        final routeConstantName = _formatLC2UU(routeVariableName);
+        final routeName = _formatLC2LU(routeVariableName);
+
         if (isInitialRoute) {
           if (hasInitialRoute == true) {
             throw UnsupportedError("There can only be one initialization page,$name's isInitialRoute should be false");
           }
           hasInitialRoute = true;
         }
-        routerValues.addLine(buildLine(className, generatedRoute, null, name));
+        routerValues.addLine(buildLine(className, generatedRoute, null, routeVariableName));
         routerValues.addImport(import);
-        pageValues.addRoute(buildRoute(name, className, buildRouteParam(prarms)));
+        pageValues.addRoute(buildRoute(routeVariableName, routeName, className, buildRouteParam(prarms)));
         if (isInitialRoute) {
-          nameValues.addLine(buildHomeAliasRouteName(peekName));
+          nameValues.addLine(buildRouteName(_formatLC2UU(_normalizeName(peekName, false)), name, false));
         }
-
         routerValues.addValues(pageValues);
-        nameValues.addLine(buildRouteName(name, isAlias));
+        nameValues.addLine(buildRouteName(routeConstantName, routeName, isAlias));
       } else {
         routerValues.addLine(buildLine(className, generatedRoute, routeFieldName, null));
         final routeGetter = annotatedElement.annotation.peek("routeGetter").objectValue as RouteGetter;
         final route = routeGetter();
         int index = 0;
-        route.forEach((key, value) => nameValues.addLine(buildRouteName(key, index++ == 0)));
+        route.forEach((key, value) => nameValues.addLine(buildRouteName(_formatLC2UU(key), key, index++ == 0)));
       }
     }
     return null;
   }
 
-  String buildLine(String className, bool generatedRoute, String routeFieldName, String routeName) =>
-      generatedRoute ? "      ..._${_formatLU2LC(routeName, false)}.entries," : "      ...$className.$routeFieldName.entries,";
+  String buildLine(String className, bool generatedRoute, String routeFieldName, String routeVariableName) =>
+      generatedRoute ? "      ..._$routeVariableName.entries," : "      ...$className.$routeFieldName.entries,";
 
   String buildRouteParam(List<RoutePrarm> prarms) {
     final buffer = StringBuffer();
@@ -95,30 +98,43 @@ class RouteCollector extends Generator {
     return write;
   }
 
-  String buildRoute(String routeName, String routePageName, String prarms) =>
-      "Map<String, RouteFactory> _${_formatLU2LC(routeName, false)} = <String, RouteFactory>{'${_formatLC2LU(routeName)}': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $routePageName($prarms))};";
+  String buildRoute(String routeVariableName, String routeName, String className, String prarms) =>
+      "Map<String, RouteFactory> _$routeVariableName = <String, RouteFactory>{'$routeName': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $className($prarms))};";
 
-  String buildHomeAliasRouteName(String routeName) => "const ROUTE_${_formatLC2UU(routeName, false)} = '/';";
-
-  String buildRouteName(String routeName, bool isAlias) => isAlias
-      ? "const ROUTE_ALIAS_${_formatLC2UU(routeName, false)} = '${_formatLC2LU(routeName)}';"
-      : "const ROUTE_${_formatLC2UU(routeName, false)} = '${_formatLC2LU(routeName)}';";
+  String buildRouteName(String routeConstantName, String routeName, bool isAlias) =>
+      isAlias ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';" : "const ROUTE_$routeConstantName = '$routeName';";
 }
 
-String _normalizeRouteName(String routeName, [bool asRouteName = true]) {
-  String result;
-  if (routeName == "/")
-    result = asRouteName ? "/" : "home";
-  else if (routeName[0] == "/") {
-    result = routeName.replaceFirst(routeName[0], "");
+String _normalizeName(String name, [bool asRouteName = true]) {
+  // String result;
+  // if (name == "/") {
+  //   if (asRouteName) {
+  //     return "/";
+  //   } else {
+  //     result = "home";
+  //   }
+  // } else if (name[0] == "/") {
+  //   result = name.replaceFirst(name[0], "");
+  // }
+  // result = result.replaceFirst(result[0], result[0].toLowerCase());
+  // return result;
+
+  final buffer = StringBuffer();
+  final exp = RegExp("[A-Za-z0-9]");
+  if (name == "/") return asRouteName ? "/" : "home";
+  bool needToUpperCase = false;
+  for (var i = 0; i < name.length; i++) {
+    //忽略除字母数字外的符号
+    if (!exp.hasMatch(name[i])) {
+      needToUpperCase = true;
+    } else {
+      buffer.write(needToUpperCase ? name[i].toUpperCase() : name[i]);
+      needToUpperCase = false;
+    }
   }
-  result = result.replaceFirst(routeName[0], routeName[0].toLowerCase());
-  return result;
+  final result = buffer.toString();
+  return result.replaceFirst(result[0], result[0].toLowerCase());
 }
 
-String _formatLC2UU(String routeName, [bool asRouteName = true]) =>
-    format(_normalizeRouteName(routeName, asRouteName), CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
-String _formatLC2LU(String routeName, [bool asRouteName = true]) =>
-    format(_normalizeRouteName(routeName, asRouteName), CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
-String _formatLU2LC(String routeName, [bool asRouteName = true]) =>
-    format(_formatLC2LU(routeName, asRouteName), CaseFormat.LOWER_UNDERSCORE, CaseFormat.LOWER_CAMEL);
+String _formatLC2UU(String text) => format(text, CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
+String _formatLC2LU(String text) => format(text, CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);

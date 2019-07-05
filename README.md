@@ -10,6 +10,7 @@
 - [ ] 生成可以静态检查参数的路由常量
 - [ ] 完善Demo Application
 - [ ] 补充样例
+- [ ] 支持build runner watch mode
 
 ## 生成代码
 
