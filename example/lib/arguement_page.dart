@@ -13,6 +13,25 @@ class ArgumentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                title,
+                style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                subTitle,
+                style: TextStyle(fontSize: 40),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
