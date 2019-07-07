@@ -1,6 +1,6 @@
 class RoutePrarm<T> implements Comparable<RoutePrarm> {
   final String key;
-  final String optionalName;
+  final String name;
   final bool isOptional;
   // final Type type;
   // final T defaultValue;
@@ -9,7 +9,7 @@ class RoutePrarm<T> implements Comparable<RoutePrarm> {
   //: assert((isOptional == true && optionalName != null) || (isOptional == false && index != null))
   const RoutePrarm({
     this.key,
-    this.optionalName,
+    this.name,
     this.isOptional = true,
     // this.type,
     // this.defaultValue,

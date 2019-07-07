@@ -13,7 +13,7 @@ class SecondPage extends StatelessWidget {
             Text("SecondPage"),
             FlatButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(ROUTE_CUSTOM_ROUTE);
+                // Navigator.of(context).pushNamed(ROUTE_CUSTOM_ROUTE);
               },
               child: Text("Next Page"),
             ),
