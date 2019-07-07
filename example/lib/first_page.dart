@@ -17,6 +17,18 @@ class FirstPage extends StatelessWidget {
               },
               child: Text("Next Page"),
             ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ROUTE_ALIAS_FUN);
+              },
+              child: Text("Go to Alias Page"),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ROUTE_CUSTOM);
+              },
+              child: Text("Go to CustomRouteName Page"),
+            ),
           ],
         ),
       ),

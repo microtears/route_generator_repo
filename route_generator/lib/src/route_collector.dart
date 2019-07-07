@@ -31,12 +31,13 @@ class RouteCollector extends Generator {
         //如果name为空则使用类名作为route name
         final peekName = annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
         //如果指定了为初始化界面则直接使route name为'/'，忽略自定义命名。
-        final name = isInitialRoute ? "/" : peekName;
+        // final name = isInitialRoute ? "/" : peekName;
+        final name = isInitialRoute ? "home" : peekName;
         final prarms = mapPrarms(annotatedElement.annotation.peek("prarms"));
         //这里获取到的是LOWER_CAMEL标准的路由变量名称
-        final routeVariableName = _normalizeName(name, false);
+        final routeVariableName = _normalizeName(name);
         final routeConstantName = _formatLC2UU(routeVariableName);
-        final routeName = _formatLC2LU(routeVariableName);
+        final routeName = isInitialRoute ? "/" : _formatLC2LU(routeVariableName);
 
         if (DEBUG) {
           final debugValues = nameValues;
@@ -67,7 +68,7 @@ class RouteCollector extends Generator {
         pageValues.addRoute(buildRoute(routeVariableName, routeName, className, buildRouteParam(prarms)));
         if (isInitialRoute) {
           //为home额外添加一个生成的路由
-          nameValues.addRow(buildRouteName(_formatLC2UU(_normalizeName(peekName, false)), name, false));
+          nameValues.addRow(buildRouteName(_formatLC2UU(_normalizeName(peekName)), routeName, false));
         }
         routerValues.addValues(pageValues);
         nameValues.addRow(buildRouteName(routeConstantName, routeName, isAlias));
@@ -133,23 +134,10 @@ class RouteCollector extends Generator {
       isAlias ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';" : "const ROUTE_$routeConstantName = '$routeName';";
 }
 
-String _normalizeName(String name, [bool asRouteName = true]) {
-  // String result;
-  // if (name == "/") {
-  //   if (asRouteName) {
-  //     return "/";
-  //   } else {
-  //     result = "home";
-  //   }
-  // } else if (name[0] == "/") {
-  //   result = name.replaceFirst(name[0], "");
-  // }
-  // result = result.replaceFirst(result[0], result[0].toLowerCase());
-  // return result;
-
+//将name转换为LOWER_CAMEL风格
+String _normalizeName(String name) {
   final buffer = StringBuffer();
   final exp = RegExp("[A-Za-z0-9]");
-  if (name == "/") return asRouteName ? "/" : "home";
   bool needToUpperCase = false;
   for (var i = 0; i < name.length; i++) {
     //忽略除字母数字外的符号

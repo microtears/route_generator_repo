@@ -1,4 +1,3 @@
-import 'package:example/app.route.dart';
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
 
