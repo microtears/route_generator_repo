@@ -22,7 +22,8 @@ class RouteCollector extends Generator {
       final path = buildStep.inputId.path;
       final package = buildStep.inputId.package;
       final generatedRoute = annotatedElement.annotation.peek("generatedRoute").boolValue;
-      final import = path.contains('lib/') ? "package:$package/${path.replaceFirst('lib/', '')}" : path;
+      final import =
+          path.contains('lib/') ? "package:$package/${path.replaceFirst('lib/', '')}" : path;
       routerValues.addImport(import);
       if (generatedRoute) {
         final pageValues = Values();
@@ -41,34 +42,37 @@ class RouteCollector extends Generator {
 
         if (DEBUG) {
           final debugValues = nameValues;
-          debugValues.addRow("//className=$className");
-          debugValues.addRow("//routeFieldName=$routeFieldName");
-          debugValues.addRow("//path=$path");
-          debugValues.addRow("//package=$package");
-          debugValues.addRow("//generatedRoute=$generatedRoute");
-          debugValues.addRow("//import=$import");
-          debugValues.addRow("//isInitialRoute=$isInitialRoute");
-          debugValues.addRow("//isAlias=$isAlias");
-          debugValues.addRow("//peekName=$peekName");
-          debugValues.addRow("//name=$name");
-          debugValues.addRow("//peekName=$peekName");
-          debugValues.addRow("//prarms=$prarms");
-          debugValues.addRow("//routeVariableName=$routeVariableName");
-          debugValues.addRow("//routeName=$routeName");
+          debugValues.addRow("// className=$className");
+          debugValues.addRow("// routeFieldName=$routeFieldName");
+          debugValues.addRow("// path=$path");
+          debugValues.addRow("// package=$package");
+          debugValues.addRow("// generatedRoute=$generatedRoute");
+          debugValues.addRow("// import=$import");
+          debugValues.addRow("// isInitialRoute=$isInitialRoute");
+          debugValues.addRow("// isAlias=$isAlias");
+          debugValues.addRow("// peekName=$peekName");
+          debugValues.addRow("// name=$name");
+          debugValues.addRow("// peekName=$peekName");
+          debugValues.addRow("// prarms=$prarms");
+          debugValues.addRow("// routeVariableName=$routeVariableName");
+          debugValues.addRow("// routeName=$routeName");
         }
 
         if (isInitialRoute) {
           if (hasInitialRoute == true) {
-            throw UnsupportedError("There can only be one initialization page,$name's isInitialRoute should be false");
+            throw UnsupportedError(
+                "There can only be one initialization page,$name's isInitialRoute should be false");
           }
           hasInitialRoute = true;
         }
         routerValues.addRow(buildRow(className, generatedRoute, null, routeVariableName));
         routerValues.addImport(import);
-        pageValues.addRoute(buildRoute(routeVariableName, routeName, className, buildRouteParam(prarms)));
+        pageValues.addRoute(
+            buildRoute(routeVariableName, routeName, className, buildRouteParam(prarms)));
         if (isInitialRoute) {
           //为home额外添加一个生成的路由
-          nameValues.addRow(buildRouteName(_formatLC2UU(_normalizeName(peekName)), routeName, false));
+          nameValues
+              .addRow(buildRouteName(_formatLC2UU(_normalizeName(peekName)), routeName, false));
         }
         routerValues.addValues(pageValues);
         nameValues.addRow(buildRouteName(routeConstantName, routeName, isAlias));
@@ -87,8 +91,11 @@ class RouteCollector extends Generator {
     return null;
   }
 
-  String buildRow(String className, bool generatedRoute, String routeFieldName, String routeVariableName) =>
-      generatedRoute ? "      ..._$routeVariableName.entries," : "      ...$className.$routeFieldName.entries,";
+  String buildRow(String className, bool generatedRoute, String routeFieldName,
+          String routeVariableName) =>
+      generatedRoute
+          ? "      ..._$routeVariableName.entries,"
+          : "      ...$className.$routeFieldName.entries,";
 
   String buildRouteParam(List<RoutePrarm> prarms) {
     final buffer = StringBuffer();
@@ -104,16 +111,17 @@ class RouteCollector extends Generator {
   }
 
   List<RoutePrarm> mapPrarms(ConstantReader value) {
-    return value?.listValue
-            ?.map((value) => RoutePrarm(
-                  key: value.getField("key").toStringValue() ?? value.getField("name").toStringValue(),
-                  name: value.getField("name").toStringValue(),
-                  isOptional: value.getField("isOptional").toBoolValue(),
-                  // type: value.getField("type").toTypeValue() as Type,
-                  // defaultValue: value.getField("defaultValue").isNull ? null : value.getField("defaultValue").toStringValue(),
-                  index: value.getField("index").toIntValue(),
-                ))
-            ?.toList() ??
+    return value?.listValue?.map((value) {
+          bool useNameAsKey = value.getField("useNameAsKey").toBoolValue();
+          bool isOptional = value.getField("isOptional").toBoolValue();
+          String key = value.getField("key").toStringValue();
+          String name = value.getField("name").toStringValue();
+          int index = value.getField("index").toIntValue();
+          if (useNameAsKey && key == null) {
+            key = name;
+          }
+          return RoutePrarm(key: key, name: name, isOptional: isOptional, index: index);
+        })?.toList() ??
         <RoutePrarm>[];
   }
 
@@ -127,11 +135,13 @@ class RouteCollector extends Generator {
     return write;
   }
 
-  String buildRoute(String routeVariableName, String routeName, String className, String prarms) =>
+  String buildRoute(
+          String routeVariableName, String routeName, String className, String prarms) =>
       "Map<String, RouteFactory> _$routeVariableName = <String, RouteFactory>{'$routeName': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $className($prarms))};";
 
-  String buildRouteName(String routeConstantName, String routeName, bool isAlias) =>
-      isAlias ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';" : "const ROUTE_$routeConstantName = '$routeName';";
+  String buildRouteName(String routeConstantName, String routeName, bool isAlias) => isAlias
+      ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';"
+      : "const ROUTE_$routeConstantName = '$routeName';";
 }
 
 //将name转换为LOWER_CAMEL风格
@@ -152,13 +162,17 @@ String _normalizeName(String name) {
   return result.replaceFirst(result[0], result[0].toLowerCase());
 }
 
-String _formatLC2UU(String text) => format(text, CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
-String _formatLC2LU(String text) => format(text, CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
+String _formatLC2UU(String text) =>
+    format(text, CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
+String _formatLC2LU(String text) =>
+    format(text, CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
 
 /// All of the declarations in this library annotated with [checker].
-Iterable<AnnotatedElement> _allElementWithChecker(LibraryReader library, TypeChecker checker, {bool throwOnUnresolved}) sync* {
+Iterable<AnnotatedElement> _allElementWithChecker(LibraryReader library, TypeChecker checker,
+    {bool throwOnUnresolved}) sync* {
   for (final element in library.allElements) {
-    for (final annotation in checker.annotationsOf(element, throwOnUnresolved: throwOnUnresolved)) {
+    for (final annotation
+        in checker.annotationsOf(element, throwOnUnresolved: throwOnUnresolved)) {
       yield AnnotatedElement(ConstantReader(annotation), element);
     }
   }

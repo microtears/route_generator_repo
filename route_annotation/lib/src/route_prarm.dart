@@ -2,6 +2,7 @@ class RoutePrarm<T> implements Comparable<RoutePrarm> {
   final String key;
   final String name;
   final bool isOptional;
+  final bool useNameAsKey;
   // final Type type;
   // final T defaultValue;
   final int index;
@@ -11,6 +12,7 @@ class RoutePrarm<T> implements Comparable<RoutePrarm> {
     this.key,
     this.name,
     this.isOptional = true,
+    this.useNameAsKey = true,
     // this.type,
     // this.defaultValue,
     this.index,
