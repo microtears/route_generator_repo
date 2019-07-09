@@ -102,8 +102,8 @@ class RouteCollector extends Generator {
     if (prarms.length == 1) {
       buffer.write(prarmToString(prarms[0]));
     } else if (prarms.length > 1) {
-      final indexPrarms = prarms.where((value) => !value.isOptional).toList();
-      final optionalPrarms = prarms.where((value) => value.isOptional).toList()..sort();
+      final indexPrarms = prarms.where((value) => !value.isOptional).toList()..sort();
+      final optionalPrarms = prarms.where((value) => value.isOptional).toList();
       indexPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
       optionalPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
     }
