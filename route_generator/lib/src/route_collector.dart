@@ -22,8 +22,9 @@ class RouteCollector extends Generator {
       final path = buildStep.inputId.path;
       final package = buildStep.inputId.package;
       final generatedRoute = annotatedElement.annotation.peek("generatedRoute").boolValue;
-      final import =
-          path.contains('lib/') ? "package:$package/${path.replaceFirst('lib/', '')}" : path;
+      final import = path.contains('lib/')
+          ? path.replaceFirst('lib/', '')
+          : "package:$package/${path.replaceFirst('lib/', '')}";
       routerValues.addImport(import);
       if (generatedRoute) {
         final pageValues = Values();
