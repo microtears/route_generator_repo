@@ -18,20 +18,25 @@ class RouteCollector extends Generator {
     //library.annotatedWith(pageChecker) 只获取同一注解的第一个，我们需要的是所有的注解
     for (var annotatedElement in _allElementWithChecker(library, pageChecker)) {
       final className = annotatedElement.element.displayName;
-      final routeFieldName = annotatedElement.annotation.peek("routeFieldName").stringValue;
+      final routeFieldName =
+          annotatedElement.annotation.peek("routeFieldName").stringValue;
       final path = buildStep.inputId.path;
       final package = buildStep.inputId.package;
-      final generatedRoute = annotatedElement.annotation.peek("generatedRoute").boolValue;
+      final generatedRoute =
+          annotatedElement.annotation.peek("generatedRoute").boolValue;
       final import = path.contains('lib/')
           ? path.replaceFirst('lib/', '')
           : "package:$package/${path.replaceFirst('lib/', '')}";
       routerValues.addImport(import);
       if (generatedRoute) {
         final pageValues = Values();
-        final isInitialRoute = annotatedElement.annotation.peek("isInitialRoute").boolValue;
+        final isInitialRoute =
+            annotatedElement.annotation.peek("isInitialRoute").boolValue;
         final isAlias = annotatedElement.annotation.peek("isAlias").boolValue;
         //如果name为空则使用类名作为route name
-        final peekName = annotatedElement.annotation.peek("name")?.stringValue ?? "/$className";
+        final peekName =
+            annotatedElement.annotation.peek("name")?.stringValue ??
+                "/$className";
         //如果指定了为初始化界面则直接使route name为'/'，忽略自定义命名。
         // final name = isInitialRoute ? "/" : peekName;
         final name = isInitialRoute ? "home" : peekName;
@@ -39,7 +44,8 @@ class RouteCollector extends Generator {
         //这里获取到的是LOWER_CAMEL标准的路由变量名称
         final routeVariableName = _normalizeName(name);
         final routeConstantName = _formatLC2UU(routeVariableName);
-        final routeName = isInitialRoute ? "/" : _formatLC2LU(routeVariableName);
+        final routeName =
+            isInitialRoute ? "/" : _formatLC2LU(routeVariableName);
 
         if (DEBUG) {
           final debugValues = nameValues;
@@ -66,19 +72,22 @@ class RouteCollector extends Generator {
           }
           hasInitialRoute = true;
         }
-        routerValues.addRow(buildRow(className, generatedRoute, null, routeVariableName));
+        routerValues.addRow(
+            buildRow(className, generatedRoute, null, routeVariableName));
         routerValues.addImport(import);
-        pageValues.addRoute(
-            buildRoute(routeVariableName, routeName, className, buildRouteParam(prarms)));
+        pageValues.addRoute(buildRoute(
+            routeVariableName, routeName, className, buildRouteParam(prarms)));
         if (isInitialRoute) {
           //为home额外添加一个生成的路由
-          nameValues
-              .addRow(buildRouteName(_formatLC2UU(_normalizeName(peekName)), routeName, false));
+          nameValues.addRow(buildRouteName(
+              _formatLC2UU(_normalizeName(peekName)), routeName, false));
         }
         routerValues.addValues(pageValues);
-        nameValues.addRow(buildRouteName(routeConstantName, routeName, isAlias));
+        nameValues
+            .addRow(buildRouteName(routeConstantName, routeName, isAlias));
       } else {
-        routerValues.addRow(buildRow(className, generatedRoute, routeFieldName, null));
+        routerValues
+            .addRow(buildRow(className, generatedRoute, routeFieldName, null));
         // type 'DartObjectImpl' is not a subtype of type 'RouteGetter' in type cast,
         // 自定义路由自动生成路由名称常量计划暂时搁置
 
@@ -103,7 +112,8 @@ class RouteCollector extends Generator {
     if (prarms.length == 1) {
       buffer.write(prarmToString(prarms[0]));
     } else if (prarms.length > 1) {
-      final indexPrarms = prarms.where((value) => !value.isOptional).toList()..sort();
+      final indexPrarms = prarms.where((value) => !value.isOptional).toList()
+        ..sort();
       final optionalPrarms = prarms.where((value) => value.isOptional).toList();
       indexPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
       optionalPrarms.forEach((prarm) => buffer.write(prarmToString(prarm)));
@@ -121,7 +131,8 @@ class RouteCollector extends Generator {
           if (useNameAsKey && key == null) {
             key = name;
           }
-          return RoutePrarm(key: key, name: name, isOptional: isOptional, index: index);
+          return RoutePrarm(
+              key: key, name: name, isOptional: isOptional, index: index);
         })?.toList() ??
         <RoutePrarm>[];
   }
@@ -136,13 +147,15 @@ class RouteCollector extends Generator {
     return write;
   }
 
-  String buildRoute(
-          String routeVariableName, String routeName, String className, String prarms) =>
+  String buildRoute(String routeVariableName, String routeName,
+          String className, String prarms) =>
       "Map<String, RouteFactory> _$routeVariableName = <String, RouteFactory>{'$routeName': (RouteSettings settings) => MaterialPageRoute(builder: (BuildContext context) => $className($prarms))};";
 
-  String buildRouteName(String routeConstantName, String routeName, bool isAlias) => isAlias
-      ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';"
-      : "const ROUTE_$routeConstantName = '$routeName';";
+  String buildRouteName(
+          String routeConstantName, String routeName, bool isAlias) =>
+      isAlias
+          ? "const ROUTE_ALIAS_$routeConstantName = '$routeName';"
+          : "const ROUTE_$routeConstantName = '$routeName';";
 }
 
 //将name转换为LOWER_CAMEL风格
@@ -169,11 +182,12 @@ String _formatLC2LU(String text) =>
     format(text, CaseFormat.LOWER_CAMEL, CaseFormat.LOWER_UNDERSCORE);
 
 /// All of the declarations in this library annotated with [checker].
-Iterable<AnnotatedElement> _allElementWithChecker(LibraryReader library, TypeChecker checker,
+Iterable<AnnotatedElement> _allElementWithChecker(
+    LibraryReader library, TypeChecker checker,
     {bool throwOnUnresolved}) sync* {
   for (final element in library.allElements) {
-    for (final annotation
-        in checker.annotationsOf(element, throwOnUnresolved: throwOnUnresolved)) {
+    for (final annotation in checker.annotationsOf(element,
+        throwOnUnresolved: throwOnUnresolved)) {
       yield AnnotatedElement(ConstantReader(annotation), element);
     }
   }

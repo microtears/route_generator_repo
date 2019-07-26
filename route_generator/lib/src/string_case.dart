@@ -5,7 +5,9 @@ enum CaseFormat {
 }
 
 String format(String value, CaseFormat from, CaseFormat to) {
-  if (from == CaseFormat.LOWER_CAMEL && (to == CaseFormat.UPPER_UNDERSCORE || to == CaseFormat.LOWER_UNDERSCORE)) {
+  if (from == CaseFormat.LOWER_CAMEL &&
+      (to == CaseFormat.UPPER_UNDERSCORE ||
+          to == CaseFormat.LOWER_UNDERSCORE)) {
     final buffer = StringBuffer();
     final exp = RegExp("[A-Z]");
     final lower = RegExp("[a-z]");
@@ -20,8 +22,10 @@ String format(String value, CaseFormat from, CaseFormat to) {
         buffer.write(char.toLowerCase());
     }
     return buffer.toString();
-  } else if (from == CaseFormat.LOWER_UNDERSCORE && to == CaseFormat.LOWER_CAMEL) {
-    if (RegExp("[0-9]").hasMatch(value[0])) throw ArgumentError("The first character cannot be a number");
+  } else if (from == CaseFormat.LOWER_UNDERSCORE &&
+      to == CaseFormat.LOWER_CAMEL) {
+    if (RegExp("[0-9]").hasMatch(value[0]))
+      throw ArgumentError("The first character cannot be a number");
     final buffer = StringBuffer();
     final exp = RegExp("[A-Za-z0-9]");
     for (var i = 0; i < value.length; i++) {

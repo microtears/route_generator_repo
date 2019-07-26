@@ -28,7 +28,8 @@ class RouteGenerator extends Generator {
       routerValues
         ..clear()
         ..addImport("package:flutter/material.dart")
-        ..addRow("RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
+        ..addRow(
+            "RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
       // return "const result='''\n" + result + "\n''';";
       return result;
     }

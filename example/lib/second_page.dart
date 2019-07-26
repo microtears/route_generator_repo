@@ -22,14 +22,16 @@ class SecondPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: _titleController,
-                decoration: InputDecoration(border: InputBorder.none, labelText: "Title"),
+                decoration: InputDecoration(
+                    border: InputBorder.none, labelText: "Title"),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: _subTitleController,
-                decoration: InputDecoration(border: InputBorder.none, labelText: "SubTitle"),
+                decoration: InputDecoration(
+                    border: InputBorder.none, labelText: "SubTitle"),
               ),
             ),
             FlatButton(
@@ -37,8 +39,12 @@ class SecondPage extends StatelessWidget {
                 Navigator.of(context).pushNamed(
                   ROUTE_ARGUMENT_PAGE,
                   arguments: {
-                    "title": _titleController.text.isNotEmpty ? _titleController.text : "title is empty",
-                    "subTitle": _subTitleController.text.isNotEmpty ? _subTitleController.text : "sub title is empty",
+                    "title": _titleController.text.isNotEmpty
+                        ? _titleController.text
+                        : "title is empty",
+                    "subTitle": _subTitleController.text.isNotEmpty
+                        ? _subTitleController.text
+                        : "sub title is empty",
                   },
                 );
               },
