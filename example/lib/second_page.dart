@@ -37,7 +37,7 @@ class SecondPage extends StatelessWidget {
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(
-                  ROUTE_ARGUMENT_PAGE,
+                  ROUTE_TWO_ARGUMENT_PAGE,
                   arguments: {
                     "title": _titleController.text.isNotEmpty
                         ? _titleController.text

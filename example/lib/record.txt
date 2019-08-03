@@ -1,0 +1,29 @@
+Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
+
+Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
+  'custom_route_page': CustomRoutePage.buildPageRoute,
+};
+
+Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
+  'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CustomRoutePage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            CustomRoutePage.buildTransitions(
+                context, animation, secondaryAnimation, child, settings),
+        transitionDuration: CustomRoutePage.transitionDuration,
+      ),
+};
+
+
+Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
+  'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CustomRoutePage.buildPage(
+                context, animation, secondaryAnimation, settings),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            CustomRoutePage.buildTransitions(
+                context, animation, secondaryAnimation, child, settings),
+        transitionDuration: CustomRoutePage.transitionDuration,
+      ),
+};

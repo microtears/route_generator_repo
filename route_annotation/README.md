@@ -1,1 +1,3 @@
 # route_annotation
+
+route_generator包的注解部分，更详细部分请参阅route_generator包的介绍以及Dart文档。

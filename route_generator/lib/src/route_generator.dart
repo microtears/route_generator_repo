@@ -2,36 +2,57 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:route_annotation/route_annotation.dart';
 
-import 'values.dart';
+import 'real_route_page.dart';
+
+const TypeChecker routeChecker = TypeChecker.fromRuntime(Router);
 
 class RouteGenerator extends Generator {
-  TypeChecker get routeChecker => TypeChecker.fromRuntime(Router);
+  Set<String> imports;
+  Set<String> routeMaps;
+  Set<String> onGenerateRoute;
+  Set<String> routeNames;
+  static final routes = <RealRoutePage>{};
 
-  static final nameValues = Values()..addRow("\n");
+  void perpare() {
+    imports = {};
+    routeMaps = {};
+    onGenerateRoute = {};
+    routeNames = {};
+    imports.add("import 'package:flutter/material.dart';");
+    onGenerateRoute
+        .add("RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
+  }
 
-  static final routerValues = Values()
-    ..addImport("package:flutter/material.dart")
-    ..addRow("RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
+  void finish() {
+    imports = null;
+    routeMaps = null;
+    onGenerateRoute = null;
+    routeNames = null;
+    routes.clear();
+  }
 
   @override
   generate(LibraryReader library, BuildStep buildStep) async {
     if (library.annotatedWith(routeChecker).isNotEmpty) {
-      // add last line
-      routerValues.addRow("])[settings.name](settings);");
-      routerValues.addRow("\n");
-      routerValues.addValues(nameValues);
-      final result = routerValues.toString();
-      //reset
-      nameValues
-        ..clear()
-        ..addRow("\n");
-      routerValues
-        ..clear()
-        ..addImport("package:flutter/material.dart")
-        ..addRow(
-            "RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
-      // return "const result='''\n" + result + "\n''';";
+      perpare();
+      routes.forEach((route) {
+        imports.add("import '${route.import}';");
+        routeMaps.add(route.buildRoute());
+        routeNames.add(route.buildRouteName());
+        onGenerateRoute.add(route.buildRouteEntries());
+      });
+      onGenerateRoute.add("])[settings.name](settings);\n");
+      final result = imports.join("\n") +
+          "\n\n" +
+          routeNames.join("\n") +
+          "\n\n" +
+          onGenerateRoute.join("\n") +
+          "\n\n" +
+          routeMaps.join("\n") +
+          "\n";
+      finish();
       return result;
+      // return "const result='''\n" + result + "\n''';";
     }
     return null;
   }

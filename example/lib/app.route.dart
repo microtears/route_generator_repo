@@ -5,55 +5,67 @@
 // **************************************************************************
 
 import 'package:flutter/material.dart';
-import 'custom_route_name_page.dart';
-import 'alias_name_page.dart';
-import 'arguement_page.dart';
+import 'home_page.dart';
 import 'custom_route_page.dart';
+import 'custom_route_name_page.dart';
 import 'second_page.dart';
-import 'first_page.dart';
+import 'one_arguement_page.dart';
+import 'two_arguement_page.dart';
+
+const ROUTE_HOME = '/';
+const ROUTE_CUSTOM_ROUTE_PAGE = 'custom_route_page';
+const ROUTE_CUSTOM = 'custom';
+const ROUTE_SECOND_PAGE = 'second_page';
+const ROUTE_ONE_ARGUMENT_PAGE = 'one_argument_page';
+const ROUTE_TWO_ARGUMENT_PAGE = 'two_argument_page';
 
 RouteFactory onGenerateRoute = (settings) => Map.fromEntries([
-      ..._custom.entries,
-      ..._aliasNamePage.entries,
-      ..._fun.entries,
-      ..._argumentPage.entries,
-      ...CustomRouteName.route.entries,
-      ..._secondPage.entries,
       ..._home.entries,
+      ..._customRoutePage.entries,
+      ..._custom.entries,
+      ..._secondPage.entries,
+      ..._oneArgumentPage.entries,
+      ..._twoArgumentPage.entries,
     ])[settings.name](settings);
 
+Map<String, RouteFactory> _home = <String, RouteFactory>{
+  '/': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => HomePage(),
+      ),
+};
+Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
+  'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CustomRoutePage.buildPage(
+                context, animation, secondaryAnimation, settings),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            CustomRoutePage.buildTransitions(
+                context, animation, secondaryAnimation, child, settings),
+        transitionDuration: CustomRoutePage.transitionDuration,
+      ),
+};
 Map<String, RouteFactory> _custom = <String, RouteFactory>{
   'custom': (RouteSettings settings) => MaterialPageRoute(
-      builder: (BuildContext context) => CustomRouteNamePage())
-};
-Map<String, RouteFactory> _aliasNamePage = <String, RouteFactory>{
-  'alias_name_page': (RouteSettings settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => AliasNamePage())
-};
-Map<String, RouteFactory> _fun = <String, RouteFactory>{
-  'fun': (RouteSettings settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => AliasNamePage())
-};
-Map<String, RouteFactory> _argumentPage = <String, RouteFactory>{
-  'argument_page': (RouteSettings settings) => MaterialPageRoute(
-      builder: (BuildContext context) => ArgumentPage(
-            (settings.arguments as Map<String, dynamic>)['title'],
-            subTitle: (settings.arguments as Map<String, dynamic>)['subTitle'],
-          ))
+        builder: (BuildContext context) => CustomRoutePageName(),
+      ),
 };
 Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
-  'second_page': (RouteSettings settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => SecondPage())
+  'second_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => SecondPage(),
+      ),
 };
-Map<String, RouteFactory> _home = <String, RouteFactory>{
-  '/': (RouteSettings settings) =>
-      MaterialPageRoute(builder: (BuildContext context) => FirstPage())
+Map<String, RouteFactory> _oneArgumentPage = <String, RouteFactory>{
+  'one_argument_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) =>
+            OneArgumentPage(title: settings.arguments),
+      ),
 };
-
-const ROUTE_CUSTOM = 'custom';
-const ROUTE_ALIAS_NAME_PAGE = 'alias_name_page';
-const ROUTE_ALIAS_FUN = 'fun';
-const ROUTE_ARGUMENT_PAGE = 'argument_page';
-const ROUTE_SECOND_PAGE = 'second_page';
-const ROUTE_FIRST_PAGE = '/';
-const ROUTE_HOME = '/';
+Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
+  'two_argument_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => TwoArgumentPage(
+              title: (settings.arguments as Map<String, dynamic>)['title'],
+              subTitle:
+                  (settings.arguments as Map<String, dynamic>)['subTitle'],
+            ),
+      ),
+};

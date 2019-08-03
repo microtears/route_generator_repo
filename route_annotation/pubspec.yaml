@@ -1,5 +1,5 @@
 name: route_annotation
-description: A new Flutter package project.
+description: route_generator包的注解部分，更详细部分请参阅route_generator包的介绍以及Dart文档。
 version: 0.0.1
 author: microtears <microtears@gmail.com>
 homepage: https://github.com/microtears/route_generator.dart

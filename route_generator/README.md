@@ -1,1 +1,109 @@
 # route_generator
+
+
+
+route_generator的注解包，包括以下注解：
+
+- `@Router()`
+
+  此注解用来标志某个为Flutter App的类，并以此生成相应的路由代码
+  
+  例如：
+  
+  ```dart
+  @Router()
+  class DemoApp extends StatefulWidget {
+    @override
+    _DemoAppState createState() => _DemoAppState();
+  }
+  
+  class _DemoAppState extends State<DemoApp> {
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        initialRoute: "/",
+        onGenerateRoute: onGenerateRoute,
+      );
+    }
+  }
+  ```
+
+- `@RoutePage()`
+
+  此注解用来注解一个路由页面
+
+  例如：
+  
+  ```dart
+  @RoutePage(isInitialRoute: true)
+  class HomePage extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(body: Center(child: Text("Home Page")));
+    }
+  }
+  ```
+
+- `@RoutePage()`
+
+  一个用来标志页面参数的注解，只为可选参数设计。用于`RoutePage`。
+
+  例如：
+  
+  ```dart
+  @RoutePage(prarms: [RouteParameter("title")])
+  class OneArgumentPage extends StatelessWidget {
+    final String title;
+
+    const OneArgumentPage({Key key, this.title}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return Container();
+    }
+  }
+
+  @RoutePage(prarms: [RouteParameter("title"), RouteParameter("subTitle")])
+  class TwoArgumentPage extends StatelessWidget {
+    final String title;
+    final String subTitle;
+
+    TwoArgumentPage({this.title, Key key, this.subTitle}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  subTitle,
+                  style: TextStyle(fontSize: 40),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+  ```
+
+- 
+
+- 
+
+- 
+
+- 
+
+- 
+
+

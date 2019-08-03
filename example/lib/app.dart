@@ -18,5 +18,3 @@ class _DemoAppState extends State<DemoApp> {
     );
   }
 }
-
-// String routeName(Map<String, RouteFactory> route, {String alias}) => alias == null ? route.keys.first : route[alias];
