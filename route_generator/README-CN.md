@@ -1,33 +1,34 @@
 [English](README.md) [简体中文](README-CN.md)
 
-- [What is it](#what-is-it)
-- [Features](#features)
-- [Depend on it](#depend-on-it)
-- [Running the code generation utility](#running-the-code-generation-utility)
+- [route_generator是什么](#routegenerator%e6%98%af%e4%bb%80%e4%b9%88)
+- [特性](#%e7%89%b9%e6%80%a7)
+- [依赖](#%e4%be%9d%e8%b5%96)
+- [生成代码](#%e7%94%9f%e6%88%90%e4%bb%a3%e7%a0%81)
 - [route_annotation](#routeannotation)
-- [Example code](#example-code)
-  - [Define routing application](#define-routing-application)
-  - [Define routing page](#define-routing-page)
-  - [Define routing page parameters](#define-routing-page-parameters)
-- [Custom route (priority: 3)](#custom-route-priority-3)
-- [Custom route (priority: 2)](#custom-route-priority-2)
-- [Custom route (priority: 1)](#custom-route-priority-1)
-- [Warning](#warning)
-- [Generated code](#generated-code)
-- [Common problem](#common-problem)
+- [代码示例](#%e4%bb%a3%e7%a0%81%e7%a4%ba%e4%be%8b)
+  - [定义路由 App](#%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1-app)
+  - [定义路由页面](#%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e9%a1%b5%e9%9d%a2)
+  - [定义路由页面参数](#%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e9%a1%b5%e9%9d%a2%e5%8f%82%e6%95%b0)
+- [自定义路由（优先级：3）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a73)
+- [自定义路由（优先级：2）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a72)
+- [自定义路由（优先级：1）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a71)
+- [注意事项](#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9)
+- [最终生成代码](#%e6%9c%80%e7%bb%88%e7%94%9f%e6%88%90%e4%bb%a3%e7%a0%81)
+- [常见问题](#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98)
+- [Example](#example)
 
-## What is it
+## route_generator是什么
 
-This is a route generation library.Only a small amount of code is required,then use the annotation to match the source code generation, automatically generate the routing table.
+这是一个简单的 Flutter 路由生成库，只需要少量的代码，然后利用注解配合源代码生成，自动生成路由表，省去手工管理路由代码的烦恼。
 
-## Features
+## 特性
 
-- Custom route name.
-- Custom route animations.
-- Custom route parameters.
-- Custom route logic.
+- 自定义路由名称
+- 自定义路由动画
+- 自定义路由参数
+- 自定义路由逻辑
 
-## Depend on it
+## 依赖
 
 ```yaml
 dependencies:
@@ -40,36 +41,32 @@ dev_dependencies:
   route_generator: ^0.0.1
 ```
 
-## Running the code generation utility
+## 生成代码
 
-- One-time code generation
+- 单次构建
 
-  By running `flutter pub run build_runner build` in the project root,you generate routing code for your application whenever they are needed. This triggers a one-time build that goes through the source files, picks the relevant ones, and generates the necessary routing code for them.
+  在项目根目录中运行`flutter pub run build_runner build`，可以在需要时为项目生成路由代码。这会触发一次性构建，该构建遍历源文件，选择相关文件，并为它们生成必要的路由代码。虽然这很方便，但如果您不必每次在模型类中进行更改时都必须手动构建，那么你可以选择持续构建。
 
-  While this is convenient, it would be nice if you did not have to run the build manually every time you make changes in your routing page classes.
+- 持续构建
 
-- Generating code continuously
-
-  A watcher makes our source code generation process more convenient. It watches changes in our project files and automatically builds the necessary files when needed. Start the watcher by running `flutter pub run build_runner watch` in the project root.
-
-  It is safe to start the watcher once and leave it running in the background.
+  在项目根目录中运行`flutter pub run build_runner watch`来启动watcher，它可以使我们的源代码生成过程更加方便。它会监视项目文件中的更改，并在需要时自动构建必要的文件。
 
 ## route_annotation
 
-| annotation                       | description                                                                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Router`                         | This annotation is used to mark a class that is a Flutter App and use this to generate the corresponding routing code.                      |
-| `RoutePage`                      | This annotation is used to annotate a routing page                                                                                          |
-| `RouteParameter`                 | An annotation used to mark page parameters is only designed for optional parameters. Used for `RoutePage`.                                  |
-| `RouteField`                     | This annotation is used to mark a completely custom route, and the annotated object must be used as a static field of the route page class. |
-| `PageRouteBuilderFuntcion`       | This annotation is used to identify the `RouteFactory` static method of a routing page.                                                     |
-| `RoutePageBuilderFunction`       | This annotation is used to identify the `RoutePageBuilder` static  method of a routing page.                                                |
-| `RouteTransitionBuilderFunction` | This annotation is used to identify the `TransitionBuilder` static method of a routing page.                                                |
-| `RouteTransitionDurationField`   | This annotation is used to identify the transition time of a custom routing page.                                                           |
+| annotation                       | description                                                                |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| `Router`                         | 此注解用来标志某个为 Flutter App 的类，并以此生成相应的路由代码            |
+| `RoutePage`                      | 此注解用来注解一个路由页面                                                 |
+| `RouteParameter`                 | 一个用来标志页面参数的注解，只为可选参数设计。用于 `RoutePage` 。          |
+| `RouteField`                     | 此注解用来标志一个完全自定义的路由，被注解的对象必须作为路由页面类静态字段 |
+| `PageRouteBuilderFuntcion`       | 这个注解用来标识一个路由页面的 `RouteFactory` 静态方法                     |
+| `RoutePageBuilderFunction`       | 这个注解用来标识一个路由页面的 `RoutePageBuilder`静态方法                  |
+| `RouteTransitionBuilderFunction` | 这个注解用来标识一个路由页面的 `TransitionBuilder` 静态方法                |
+| `RouteTransitionDurationField`   | 这个注解用来标识一个自定义路由页面的过渡时长                               |
 
-## Example code
+## 代码示例
 
-### Define routing application
+### 定义路由 App
 
 ```dart
 @Router()
@@ -89,7 +86,7 @@ class _DemoAppState extends State<DemoApp> {
 }
 ```
 
-### Define routing page
+### 定义路由页面
 
 ```dart
 // isInitialRoute为true表示它将作为initial page
@@ -103,9 +100,9 @@ class HomePage extends StatelessWidget {
 
 ```
 
-### Define routing page parameters
+### 定义路由页面参数
 
-- For single parameter
+- 对于单个参数
 
   ```dart
   @RoutePage(params: [RouteParameter("title")])
@@ -121,7 +118,7 @@ class HomePage extends StatelessWidget {
   }
   ```
 
-  Navigation:
+  导航
 
   ```dart
   Navigator.of(context).pushNamed(
@@ -130,11 +127,11 @@ class HomePage extends StatelessWidget {
   );
   ```
   
-  Warning：
+  注意事项：
   
-  For the route of a single parameter, the `arguments` is the raw argument when navigating with the Navigator.
+  对于单个参数的路由，利用Navigator进行导航的时候`arguments`即为原始参数。
 
-- For multiple parameters
+- 对于多个参数
 
   ```dart
   @RoutePage(params: [RouteParameter("title"), RouteParameter("subTitle")])
@@ -151,7 +148,7 @@ class HomePage extends StatelessWidget {
   }
   ```
 
-  Navigation:
+  导航
 
   ```dart
   Navigator.of(context).pushNamed(
@@ -167,15 +164,15 @@ class HomePage extends StatelessWidget {
   );
   ```
 
-  Warning：
+  注意事项：
   
-  For the route of multiple parameters, the `arguments` must be `Map<string,dynamic>` when navigating with Navigator.
+  对于多个参数的路由，利用Navigator进行导航的时候`arguments`必须为`Map<string,dynamic>`。
 
-**If you don't need custom routing, the following sections, you can add nothing, let route_generator automatically generate relevant code for you!**
+**如果你不需要自定义路由，以下部分，你可以什么都不用添加，就让route_generator为你自动生成相关代码吧！**
 
-## Custom route (priority: 3)
+## 自定义路由（优先级：3）
 
-This method has the highest priority for custom routing. If there are multiple custom routing options at the same time, this plan is selected first.
+这种方法自定义路由的优先级最高，如果同时存在多种自定义路由选择，该种方案最先被选择。
 
 ```dart
 @RoutePage()
@@ -196,15 +193,15 @@ class CustomRoutePage extends StatelessWidget {
 }
 ```
 
-It will generate the following code:
+它会生成如下代码：
 
 ```dart
 Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
 ```
 
-## Custom route (priority: 2)
+## 自定义路由（优先级：2）
 
-This method has a lower priority for custom routing. If there are multiple custom routing options at the same time, the plan is selected by priority from large to small.
+这种方法自定义路由的优先级较低，如果同时存在多种自定义路由选择，则按优先级从大到小选择。
 
 ```dart
 @RoutePage()
@@ -221,7 +218,7 @@ class CustomRoutePage extends StatelessWidget {
 }
 ```
 
-It will generate the following code:
+它会生成如下代码：
 
 ```dart
 Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
@@ -229,24 +226,22 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 };
 ```
 
-## Custom route (priority: 1)
+## 自定义路由（优先级：1）
 
-This method has the lowest priority for custom routing. If there are multiple custom routing options at the same time, the plan is selected by priority from large to small.
+这种方法自定义路由的优先级最低，如果同时存在多种自定义路由选择，则按优先级从大到小选择。
 
 ```dart
 @RoutePage()
 class CustomRoutePage extends StatelessWidget {
-  /// The RoutePageBuilderFunction annotation indicates that this method
-  /// is used to define how to return a RoutePage.
-  /// It is optional
+  // RoutePageBuilderFunction注解表明这个方法用来定义如何返回RoutePage
+  // 它是可选的
   @RoutePageBuilderFunction()
   static Widget buildPage(BuildContext context, Animation animation,
           Animation secondaryAnimation, RouteSettings settings) =>
       CustomRoutePage();
 
-  /// The RouteTransitionBuilderFunction annotation indicates that this
-  /// method is used to define how to use animations.
-  /// It is optional
+  // RouteTransitionBuilderFunction注解表明这个方法用来定义如何应用动画过渡
+  // 它是可选的
   @RouteTransitionBuilderFunction()
   static Widget buildTransitions(
           BuildContext context,
@@ -256,10 +251,8 @@ class CustomRoutePage extends StatelessWidget {
           RouteSettings settings) =>
       child;
 
-  /// The RouteTransitionDurationField annotation indicates that this
-  /// field is used to define the length of the page transition. The
-  /// default value is 300 milliseconds.
-  /// It is optional
+  // RouteTransitionDurationField注解表明这个字段用来定义页面过渡时常长，默认值为300 milliseconds
+  // 它是可选的
   @RouteTransitionDurationField()
   static Duration transitionDuration = Duration(milliseconds: 400);
 
@@ -268,7 +261,7 @@ class CustomRoutePage extends StatelessWidget {
 }
 ```
 
-It will generate the following code:
+它会生成如下代码：
 
 ```dart
 Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
@@ -283,17 +276,16 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 };
 ```
 
-## Warning
+## 注意事项
 
-- Only one initalRoute is allowed
-- initalRoute ignores custom route name,but generates a route name constant named `ROUTE_HOME`.
-- All custom route methods or getters must be defined in the class of the route page and must be static and public.
+- 只允许有一个initalRoute
+- initalRoute会忽略自定义路由名，但会生成名为`ROUTE_HOME`的路由名称常量。
+- 所有自定义路由method或getter必须定义在路由所在类，且必须为static所修饰的和非私有的。
 
-## Generated code
+## 最终生成代码
 
-The file name is filename.route.dart
-
-Where filename is the file name of the Application class annotated by Router.
+最终生成的文件名为FILENAME.route.dart
+其中FILENAME是被Router注解的App类所在的文件名。
 
 ```dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
@@ -370,10 +362,12 @@ Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
 
 ```
 
-## Common problem
+## 常见问题
 
-- No file generated
+- 没有生成路由文件
   
-  Please check if the Router annotation has been added
+  请检查是否添加了Router注解
 
-For more details, please see [example](https://github.com/microtears/route_generator_repo/tree/master/example)
+## Example
+
+获取更详细信息，请参阅[example](https://github.com/microtears/route_generator_repo/tree/master/example)

@@ -3,12 +3,15 @@ import 'package:route_annotation/route_annotation.dart';
 
 @RoutePage()
 class CustomRoutePage extends StatelessWidget {
-  // @RouteField()
+  @RouteField()
   static Map<String, RouteFactory> route = <String, RouteFactory>{
     'custom_route': (RouteSettings settings) =>
         MaterialPageRoute(builder: (BuildContext context) => CustomRoutePage()),
-    'alias_route': (RouteSettings settings) =>
-        MaterialPageRoute(builder: (BuildContext context) => CustomRoutePage()),
+    'alias_route': (RouteSettings settings) => PageRouteBuilder(
+          pageBuilder: (BuildContext context, Animation animation,
+                  Animation secondaryAnimation) =>
+              CustomRoutePage(),
+        ),
   };
 
   @RoutePageBuilderFunction()
@@ -44,6 +47,3 @@ class CustomRoutePage extends StatelessWidget {
     );
   }
 }
-
-String routeName(Map<String, RouteFactory> route, {String alias}) =>
-    alias == null ? route.keys.first : route[alias];

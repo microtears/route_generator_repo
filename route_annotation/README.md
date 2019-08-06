@@ -1,3 +1,1 @@
-# route_annotation
-
-route_generator包的注解部分，更详细部分请参阅route_generator包的介绍以及Dart文档。
+The route_annotation library is annotated with the route_generator library. For more details, see the introduction of the route_generator library and the Dart documentation.

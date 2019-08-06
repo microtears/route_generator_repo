@@ -1,8 +1,8 @@
 name: route_generator
-description: A new Flutter package project.
-version: 0.0.1
+description: This is a route generation library.Only a small amount of code is required,then use the annotation to match the source code generation, automatically generate the routing table.
+version: 0.1.1
 author: microtears <microtears@gmail.com>
-homepage: https://github.com/microtears/route_generator.dart
+homepage: https://github.com/microtears/route_generator_repo
 
 
 environment:
@@ -12,13 +12,15 @@ dependencies:
   flutter:
     sdk: flutter
   source_gen: ^0.9.4+2
-
+  route_annotation: ^0.1.0
+  analyzer: ^0.37.0
+  build: ^1.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  route_annotation:
-    path: ../route_annotation
+  # route_annotation:
+  #   path: ../route_annotation
   build_runner: ^1.5.0
 
 flutter:

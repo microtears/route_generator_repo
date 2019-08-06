@@ -1,12 +1,12 @@
-// 将name转换为LOWER_CAMEL风格
 import 'package:route_generator/src/string_case.dart';
 
+/// Convert [name] to LOWER_CAMEL style
 String normalizeName(String name) {
   final buffer = StringBuffer();
   final exp = RegExp("[A-Za-z0-9]");
   bool needToUpperCase = false;
   for (var i = 0; i < name.length; i++) {
-    // 忽略除字母数字外的符号
+    // ignore symbols other than alphanumeric
     if (!exp.hasMatch(name[i])) {
       needToUpperCase = true;
     } else {

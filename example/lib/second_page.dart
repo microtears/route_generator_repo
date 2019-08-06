@@ -37,6 +37,17 @@ class SecondPage extends StatelessWidget {
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(
+                  ROUTE_ONE_ARGUMENT_PAGE,
+                  arguments: _titleController.text.isNotEmpty
+                      ? _titleController.text
+                      : "title is empty",
+                );
+              },
+              child: Text("Go to Argument Page1"),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(
                   ROUTE_TWO_ARGUMENT_PAGE,
                   arguments: {
                     "title": _titleController.text.isNotEmpty
@@ -48,7 +59,7 @@ class SecondPage extends StatelessWidget {
                   },
                 );
               },
-              child: Text("Go to Argument Page"),
+              child: Text("Go to Argument Page2"),
             ),
           ],
         ),
