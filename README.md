@@ -1,8 +1,8 @@
 # route_generator_repo
 
-## 这是一个简单的 Flutter 路由生成库，只需要少量的代码，然后利用注解配合源代码生成，自动生成路由表，减去手工管理路由代码的烦恼
+This is a route generation library.Only a small amount of code is required,then use the annotation to match the source code generation, automatically generate the routing table.
 
-**具体使用方法，请查阅[route_generator](./route_generator/README.md)**
+**For details, please refer to[route_generator](./route_generator/README.md)**
 
 ## route_generator
 
@@ -20,5 +20,4 @@ Package: <https://pub.dev/packages/route_annotation>
 
 * [Source code](example)
 
-这是用来展示如何使用 `json_serializable` 和
-`json_annotation`的代码示例。
+An example showing how to setup and use `route_generator` and `route_annotation`.
