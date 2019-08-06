@@ -92,7 +92,7 @@ class _DemoAppState extends State<DemoApp> {
 ### Define routing page
 
 ```dart
-// isInitialRoute为true表示它将作为initial page
+// isInitialRoute is true to indicate that it will be used as the initial page
 @RoutePage(isInitialRoute: true)
 class HomePage extends StatelessWidget {
   @override

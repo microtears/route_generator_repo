@@ -1,6 +1,6 @@
 name: route_generator
 description: This is a route generation library.Only a small amount of code is required,then use the annotation to match the source code generation, automatically generate the routing table.
-version: 0.1.1
+version: 0.1.2
 author: microtears <microtears@gmail.com>
 homepage: https://github.com/microtears/route_generator_repo
 
