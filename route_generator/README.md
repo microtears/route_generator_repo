@@ -32,12 +32,12 @@ This is a route generation library.Only a small amount of code is required,then 
 ```yaml
 dependencies:
   # Your other regular dependencies here
-  route_annotation: ^0.0.1
+  route_annotation: ^0.1.0
 
 dev_dependencies:
   # Your other dev_dependencies here
   build_runner: ^1.5.0
-  route_generator: ^0.0.1
+  route_generator: ^0.1.2
 ```
 
 ## Running the code generation utility
