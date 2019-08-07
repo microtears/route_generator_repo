@@ -24,8 +24,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   build_runner: ^1.5.0
-  route_annotation:
-    path: ../route_annotation
+  route_annotation: ^0.1.0
+  # route_annotation:
+  #   path: ../route_annotation
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,9 @@
+## 0.1.2+1
+
+* update doc link.
+* export builder classes.
+* add travis ci script.
+
 ## 0.1.2
 
 * update description.

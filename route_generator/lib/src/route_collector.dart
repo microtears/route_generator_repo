@@ -1,11 +1,11 @@
 import 'package:build/build.dart';
 import 'package:route_annotation/route_annotation.dart';
-import 'package:route_generator/src/real_route_paramemter.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 
 import 'real_route_page.dart';
 import 'route_generator.dart';
+import 'real_route_paramemter.dart';
 
 const TypeChecker routePageChecker = TypeChecker.fromRuntime(RoutePage);
 const TypeChecker routeGetterChecker = TypeChecker.fromRuntime(RouteField);

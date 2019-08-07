@@ -1,4 +1,6 @@
-[English](README.md) [简体中文](README-CN.md)
+[![build_state](https://travis-ci.org/microtears/route_generator_repo.svg?branch=master)](https://travis-ci.org/microtears/route_generator_repo)&nbsp;&nbsp;
+
+[English](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README.md) [简体中文](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README-CN.md)
 
 - [route_generator是什么](#routegenerator%e6%98%af%e4%bb%80%e4%b9%88)
 - [特性](#%e7%89%b9%e6%80%a7)
