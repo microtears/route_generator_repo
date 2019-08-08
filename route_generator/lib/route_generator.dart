@@ -6,3 +6,4 @@ export 'src/route_collector.dart';
 export 'src/route_generator.dart';
 export 'src/string_case.dart';
 export 'src/util.dart';
+export 'src/watch_state.dart';

@@ -1,0 +1,19 @@
+# If you are sure that you only run `flutter pub run build_runner build`,
+# and don't run `flutter pub run build_runner watch`, then you can enable 
+# the following comment out content.
+# targets:
+#   $default:
+#     builders:
+#       route_generator|route_collector:
+#         enabled: false
+
+# If you also want to enable source generation for packages from dependencies 
+# in pubspec.yaml, I think the following is what you need.
+builders:
+  route_collector_all_packages:
+    import: 'package:route_generator/builder.dart'
+    builder_factories: ['routeCollectorAllPackages']
+    build_extensions: { '.dart': ['.collector_all_packages.dart'] }
+    auto_apply: all_packages
+    runs_before: ["route_generator|route_builder"]
+    build_to: cache

@@ -4,8 +4,8 @@ import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 
 import 'real_route_page.dart';
-import 'route_generator.dart';
 import 'real_route_paramemter.dart';
+import 'watch_state.dart';
 
 const TypeChecker routePageChecker = TypeChecker.fromRuntime(RoutePage);
 const TypeChecker routeGetterChecker = TypeChecker.fromRuntime(RouteField);
@@ -18,25 +18,37 @@ const TypeChecker routeTransitionBuilderFunctionChecker =
 const TypeChecker routeTransitionDurationGetterChecker =
     TypeChecker.fromRuntime(RouteTransitionDurationField);
 
-final routes = RouteGenerator.routes;
-
 class RouteCollector extends Generator {
-  static const DEBUG = true;
-
-  bool hasInitialRoute = false;
+  static const DEBUG = false;
 
   @override
   generate(LibraryReader library, BuildStep buildStep) async {
+    final inputId = buildStep.inputId.toString();
+    if (fileRoutes[inputId] == null) {
+      fileRoutes[inputId] = {};
+    }
+    final previous = Set<RealRoutePage>.from(fileRoutes[inputId]);
+    fileRoutes[inputId].clear();
     for (var annotatedElement in library.annotatedWith(routePageChecker)) {
       final className = annotatedElement.element.displayName;
       final path = buildStep.inputId.path;
       final package = buildStep.inputId.package;
-      final import = path.contains('lib/')
-          ? path.replaceFirst('lib/', '')
-          : "package:$package/${path.replaceFirst('lib/', '')}";
+      final import = "package:$package/${path.replaceFirst('lib/', '')}";
       final route = resolveRoutePage(
           library.findType(className), annotatedElement.annotation, import);
       routes.add(route);
+      fileRoutes[inputId].add(route);
+    }
+    rewrite = true;
+    final current = fileRoutes[inputId];
+    if (current.length < previous.length) {
+      final differences = previous.difference(current);
+      differences.forEach((removed) {
+        routes.removeWhere((route) => route.routeName == removed.routeName);
+      });
+      if (differences.isNotEmpty) {
+        rewrite = true;
+      }
     }
     return null;
   }
@@ -45,13 +57,7 @@ class RouteCollector extends Generator {
       ClassElement classElement, ConstantReader annotation, String import) {
     final className = classElement.displayName;
     final isInitialRoute = annotation.peek("isInitialRoute").boolValue;
-    if (isInitialRoute) {
-      if (hasInitialRoute == true) {
-        throw UnsupportedError(
-            "There can only be one initialization page,$className's isInitialRoute should be false");
-      }
-      hasInitialRoute = true;
-    }
+
     final peekName = annotation.peek("name")?.stringValue ?? "/$className";
     final routeName = isInitialRoute ? "home" : peekName;
 

@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "1.0.6"
   build_runner:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: build_runner
       url: "https://pub.flutter-io.cn"
@@ -141,6 +141,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.9"
+  example_library:
+    dependency: "direct main"
+    description:
+      path: "..\\example_library"
+      relative: true
+    source: path
+    version: "0.0.1"
   fixnum:
     dependency: transitive
     description:

@@ -1,3 +1,9 @@
+## 0.1.3
+
+* Support for source code generation of packages from dependencies in the pubspec.yaml file
+* Update example.
+* Improve the source code generation process in watch mode.
+
 ## 0.1.2+1
 
 * Update document link.

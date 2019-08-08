@@ -1,7 +1,7 @@
 import 'real_route_paramemter.dart';
 import 'util.dart';
 
-class RealRoutePage {
+class RealRoutePage extends Object {
   String import;
   String name;
   String className;
@@ -81,4 +81,11 @@ class RealRoutePage {
       return buffer.toString();
     }
   }
+
+  @override
+  bool operator ==(other) =>
+      other is RealRoutePage && routeName == other.routeName;
+
+  @override
+  int get hashCode => routeName.hashCode;
 }

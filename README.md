@@ -2,7 +2,7 @@
 
 This is a route generation library.Only a small amount of code is required,then use the annotation to match the source code generation, automatically generate the routing table.
 
-**For details, please refer to[route_generator](./route_generator/README.md)**
+**For details, please refer to [route_generator](./route_generator/README.md)**
 
 ## route_generator
 
