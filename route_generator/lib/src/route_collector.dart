@@ -46,9 +46,6 @@ class RouteCollector extends Generator {
       differences.forEach((removed) {
         routes.removeWhere((route) => route.routeName == removed.routeName);
       });
-      if (differences.isNotEmpty) {
-        rewrite = true;
-      }
     }
     return null;
   }
