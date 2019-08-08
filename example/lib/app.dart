@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
-import 'package:example_library/example_library.dart';
 
 import 'app.route.dart';
-
-final route = {
-  "library_route":
-      MaterialPageRoute(builder: (BuildContext context) => LibraryPage()),
-};
 
 @Router()
 class DemoApp extends StatefulWidget {

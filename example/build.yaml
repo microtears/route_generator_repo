@@ -7,8 +7,8 @@
 #       route_generator|route_collector:
 #         enabled: false
 
-# If you also want to enable source generation for packages from dependencies 
-# in pubspec.yaml, I think the following is what you need.
+# If you also want to enable source code generation for the packages of
+# dependencies in the pubspec.yaml, I think the following is what you need.
 builders:
   route_collector_all_packages:
     import: 'package:route_generator/builder.dart'
