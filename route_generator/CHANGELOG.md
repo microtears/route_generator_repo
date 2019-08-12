@@ -1,3 +1,7 @@
+## 0.1.3+1
+
+* Fixed: the parameter list is empty.
+
 ## 0.1.3
 
 * Support for source code generation of packages from dependencies in the pubspec.yaml file

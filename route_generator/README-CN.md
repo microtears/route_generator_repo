@@ -2,6 +2,9 @@
 
 [English](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README.md) [简体中文](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README-CN.md)
 
+- [2019/08/09 更新](#20190809-%e6%9b%b4%e6%96%b0)
+  - [从pubspec.yaml文件中的依赖包自动生成路由代码](#%e4%bb%8epubspecyaml%e6%96%87%e4%bb%b6%e4%b8%ad%e7%9a%84%e4%be%9d%e8%b5%96%e5%8c%85%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e8%b7%af%e7%94%b1%e4%bb%a3%e7%a0%81)
+  - [关于build_runner watch模式下的问题](#%e5%85%b3%e4%ba%8ebuildrunner-watch%e6%a8%a1%e5%bc%8f%e4%b8%8b%e7%9a%84%e9%97%ae%e9%a2%98)
 - [route_generator是什么](#routegenerator%e6%98%af%e4%bb%80%e4%b9%88)
 - [特性](#%e7%89%b9%e6%80%a7)
 - [依赖](#%e4%be%9d%e8%b5%96)
@@ -19,6 +22,51 @@
 - [常见问题](#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98)
 - [Example](#example)
 
+## 2019/08/09 更新
+
+### 从pubspec.yaml文件中的依赖包自动生成路由代码
+
+感谢[@法的空间](https://juejin.im/user/5bdc1a32518825170b101080)网友的建议，新的版本支持从pubspec.yaml文件中的依赖包自动生成路由代码了。
+启用方法如下：
+
+1. 在需要支持从pubspec.yaml文件中的依赖包自动生成路由代码的项目根目录下，新建build.yaml文件，如果已经存在，则跳过这一步。
+
+2. 在文件中添加以下内容：
+
+    ```yaml
+    # If you are sure that you only run `flutter pub run build_runner build`,
+    # and don't run `flutter pub run build_runner watch`, then you can enable
+    # the following comment out content.
+    # targets:
+    #   $default:
+    #     builders:
+    #       route_generator|route_collector:
+    #         enabled: false
+
+    # If you also want to enable source code generation for the packages of
+    # dependencies in the pubspec.yaml, I think the following is what you need.
+    builders:
+      route_collector_all_packages:
+        import: 'package:route_generator/builder.dart'
+        builder_factories: ['routeCollectorAllPackages']
+        build_extensions: { '.dart': ['.collector_all_packages.dart'] }
+        auto_apply: all_packages
+        runs_before: ["route_generator|route_builder"]
+        build_to: cache
+    ```
+
+    注意相同key部分请合并。
+
+3. 重新运行build_runner command即可
+
+获取更详细信息，请参阅[example](https://github.com/microtears/route_generator_repo/tree/master/example)
+
+### 关于build_runner watch模式下的问题
+
+- 需要了解的是：pubspec.yaml dependencies packages 不支持watch模式持续生成路由代码（第一次生成依然是有效的），但是你任然可以在当前的application启用watch模式。后期考虑支持。
+
+- 由于BuildStep不支持同一文件的不同输出，即对于每一个文件，它的输出文件是限定了的，所以watch模式下，如果你修改了注解信息，那么你可能需要使Route注解所在的文件刷新一次(必须使文件出现改动，并且保存，例如添加空行)，才会重新生成xxx.route.dart。正在尽力解决，目前方案需要手动刷新一次，如果大家有更好的方案，欢迎提出。
+
 ## route_generator是什么
 
 这是一个简单的 Flutter 路由生成库，只需要少量的代码，然后利用注解配合源代码生成，自动生成路由表，省去手工管理路由代码的烦恼。
@@ -29,6 +77,7 @@
 - 自定义路由动画
 - 自定义路由参数
 - 自定义路由逻辑
+- 支持从pubspec.yaml文件中的依赖包自动生成路由代码
 
 ## 依赖
 

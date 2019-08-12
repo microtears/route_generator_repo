@@ -43,9 +43,7 @@ class RouteCollector extends Generator {
     final current = fileRoutes[inputId];
     if (current.length < previous.length) {
       final differences = previous.difference(current);
-      differences.forEach((removed) {
-        routes.removeWhere((route) => route.routeName == removed.routeName);
-      });
+      routes.removeAll(differences.toList());
     }
     return null;
   }
@@ -67,7 +65,6 @@ class RouteCollector extends Generator {
           <RealRouteParameter>[];
     }
 
-    routeGetterChecker.firstAnnotationOf(classElement);
     final methods = classElement.methods;
     final fields = classElement.fields;
     String findNeedStaticMethodName(
@@ -115,7 +112,7 @@ class RouteCollector extends Generator {
       className,
       routeName,
       isInitialRoute: isInitialRoute,
-      prarms: getPrarmters(annotation.peek("prarms")),
+      prarms: getPrarmters(annotation.peek("params")),
       routeField: routeField,
       pageRouteBuilderFuntcion: pageRouteBuilderFuntcion,
       routePageBuilderFunction: routePageBuilderFunction,
