@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   source_gen: ^0.9.4+2
   route_annotation: ^0.2.1
-  analyzer: ^0.37.0
+  analyzer: ^0.38.2
   build: ^1.1.5
 
 dev_dependencies:
