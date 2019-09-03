@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Remove dependencie: flutter.
+
 ## 0.2.0
 
 * Add annotation constant.
