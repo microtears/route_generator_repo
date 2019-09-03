@@ -38,16 +38,24 @@ class RealRoutePage extends Object {
       return "Map<String, RouteFactory> _$routeVariableName = "
           "<String, RouteFactory>{'$routeName': $className.$pageRouteBuilderFuntcion,};";
     }
-    final prarms = _buildPrarmters();
+    final prarm = _buildPrarmters();
     if (routePageBuilderFunction == null &&
         routeTransitionBuilderFunction == null &&
         routeTransitionDurationField == null) {
-      return "Map<String, RouteFactory> _$routeVariableName = "
-          "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
-          "MaterialPageRoute(builder: (BuildContext context) => $className($prarms),),};";
+      if (prarms.length < 2) {
+        return "Map<String, RouteFactory> _$routeVariableName = "
+            "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
+            "MaterialPageRoute(builder: (BuildContext context) => $className($prarm),),};";
+      } else {
+        return "Map<String, RouteFactory> _$routeVariableName = "
+            "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
+            "MaterialPageRoute(builder: (BuildContext context) {"
+            "final arguments = settings.arguments as Map<String, dynamic>;"
+            "return $className($prarm);},),};";
+      }
     }
     final page = routePageBuilderFunction == null
-        ? "pageBuilder: (context,animation,secondaryAnimation) => $className($prarms),"
+        ? "pageBuilder: (context,animation,secondaryAnimation) => $className($prarm),"
         : "pageBuilder: (context,animation,secondaryAnimation) => "
             "$className.$routePageBuilderFunction(context,animation,secondaryAnimation,settings),";
     final transitions = routeTransitionBuilderFunction == null
@@ -75,8 +83,7 @@ class RealRoutePage extends Object {
       final buffer = StringBuffer();
       prarms.forEach((prarm) {
         final key = prarm.key ?? prarm.name;
-        buffer.write(
-            "${prarm.name} : (settings.arguments as Map<String, dynamic>)['$key'],");
+        buffer.write("${prarm.name} : arguments['$key'],");
       });
       return buffer.toString();
     }

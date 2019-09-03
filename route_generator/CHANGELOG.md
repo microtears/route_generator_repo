@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Remove unnecessary type conversions
+
 ## 0.1.3+1
 
 * Fixed: the parameter list is empty.

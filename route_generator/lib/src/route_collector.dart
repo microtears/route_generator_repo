@@ -24,9 +24,7 @@ class RouteCollector extends Generator {
   @override
   generate(LibraryReader library, BuildStep buildStep) async {
     final inputId = buildStep.inputId.toString();
-    if (fileRoutes[inputId] == null) {
-      fileRoutes[inputId] = {};
-    }
+    fileRoutes.putIfAbsent(inputId, () => {});
     final previous = Set<RealRoutePage>.from(fileRoutes[inputId]);
     fileRoutes[inputId].clear();
     for (var annotatedElement in library.annotatedWith(routePageChecker)) {
@@ -34,8 +32,9 @@ class RouteCollector extends Generator {
       final path = buildStep.inputId.path;
       final package = buildStep.inputId.package;
       final import = "package:$package/${path.replaceFirst('lib/', '')}";
-      final route = resolveRoutePage(
-          library.findType(className), annotatedElement.annotation, import);
+      final classElement = library.findType(className);
+      final route =
+          resolveRoutePage(classElement, annotatedElement.annotation, import);
       routes.add(route);
       fileRoutes[inputId].add(route);
     }
