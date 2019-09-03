@@ -4,7 +4,7 @@ import 'package:route_annotation/route_annotation.dart';
 
 import 'app.route.dart';
 
-@RoutePage()
+@page
 class SecondPage extends StatelessWidget {
   final _titleController = TextEditingController();
   final _subTitleController = TextEditingController();

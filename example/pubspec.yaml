@@ -10,7 +10,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
-  route_annotation: ^0.1.0
+  # route_annotation: ^0.2.0
+  route_annotation:
+    path: ../route_annotation
   example_library:
     path: ../example_library
 

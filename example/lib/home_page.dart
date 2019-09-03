@@ -3,7 +3,7 @@ import 'package:route_annotation/route_annotation.dart';
 
 import 'app.route.dart';
 
-@RoutePage(isInitialRoute: true)
+@initialPage
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

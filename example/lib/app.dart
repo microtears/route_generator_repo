@@ -3,7 +3,7 @@ import 'package:route_annotation/route_annotation.dart';
 
 import 'app.route.dart';
 
-@Router()
+@router
 class DemoApp extends StatefulWidget {
   @override
   _DemoAppState createState() => _DemoAppState();

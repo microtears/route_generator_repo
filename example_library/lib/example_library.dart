@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
 
-@RoutePage()
+@page
 class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

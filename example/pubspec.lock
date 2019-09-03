@@ -329,10 +329,10 @@ packages:
   route_annotation:
     dependency: "direct main"
     description:
-      name: route_annotation
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.0"
+      path: "..\\route_annotation"
+      relative: true
+    source: path
+    version: "0.2.0"
   route_generator:
     dependency: "direct dev"
     description:

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
 
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  @RouteField()
+  @routeField
   static Map<String, RouteFactory> route = <String, RouteFactory>{
     'custom_route': (RouteSettings settings) =>
         MaterialPageRoute(builder: (BuildContext context) => CustomRoutePage()),
@@ -14,12 +14,12 @@ class CustomRoutePage extends StatelessWidget {
         ),
   };
 
-  @RoutePageBuilderFunction()
+  @pageBuilder
   static Widget buildPage(BuildContext context, Animation animation,
           Animation secondaryAnimation, RouteSettings settings) =>
       CustomRoutePage();
 
-  @RouteTransitionBuilderFunction()
+  @transitionBuilder
   static Widget buildTransitions(
           BuildContext context,
           Animation<double> animation,
@@ -28,10 +28,10 @@ class CustomRoutePage extends StatelessWidget {
           RouteSettings settings) =>
       child;
 
-  @RouteTransitionDurationField()
-  static Duration transitionDuration = Duration(milliseconds: 400);
+  @transitionDuration
+  static Duration transitionDurations = Duration(milliseconds: 400);
 
-  // @PageRouteBuilderFuntcion()
+  @routeBuilder
   static Route buildPageRoute(RouteSettings settings) => PageRouteBuilder(
         pageBuilder: (BuildContext context, Animation animation,
                 Animation secondaryAnimation) =>

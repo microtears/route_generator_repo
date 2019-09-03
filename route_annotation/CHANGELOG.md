@@ -1,3 +1,7 @@
+## 0.2.0
+
+* Add annotation constant.
+
 ## 0.1.0+1
 
 * Update document.

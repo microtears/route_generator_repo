@@ -8,7 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  route_annotation:
+    path: ../route_annotation
 dev_dependencies:
   flutter_test:
     sdk: flutter
