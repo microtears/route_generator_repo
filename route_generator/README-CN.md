@@ -2,9 +2,6 @@
 
 [English](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README.md) [简体中文](https://github.com/microtears/route_generator_repo/blob/master/route_generator/README-CN.md)
 
-- [2019/08/09 更新](#20190809-%e6%9b%b4%e6%96%b0)
-  - [从pubspec.yaml文件中的依赖包自动生成路由代码](#%e4%bb%8epubspecyaml%e6%96%87%e4%bb%b6%e4%b8%ad%e7%9a%84%e4%be%9d%e8%b5%96%e5%8c%85%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e8%b7%af%e7%94%b1%e4%bb%a3%e7%a0%81)
-  - [关于build_runner watch模式下的问题](#%e5%85%b3%e4%ba%8ebuildrunner-watch%e6%a8%a1%e5%bc%8f%e4%b8%8b%e7%9a%84%e9%97%ae%e9%a2%98)
 - [route_generator是什么](#routegenerator%e6%98%af%e4%bb%80%e4%b9%88)
 - [特性](#%e7%89%b9%e6%80%a7)
 - [依赖](#%e4%be%9d%e8%b5%96)
@@ -17,55 +14,12 @@
 - [自定义路由（优先级：3）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a73)
 - [自定义路由（优先级：2）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a72)
 - [自定义路由（优先级：1）](#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b7%af%e7%94%b1%e4%bc%98%e5%85%88%e7%ba%a71)
+- [从pubspec.yaml文件中的依赖包自动生成路由代码](#%e4%bb%8epubspecyaml%e6%96%87%e4%bb%b6%e4%b8%ad%e7%9a%84%e4%be%9d%e8%b5%96%e5%8c%85%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e8%b7%af%e7%94%b1%e4%bb%a3%e7%a0%81)
+- [关于build_runner watch模式下的问题](#%e5%85%b3%e4%ba%8ebuildrunner-watch%e6%a8%a1%e5%bc%8f%e4%b8%8b%e7%9a%84%e9%97%ae%e9%a2%98)
 - [注意事项](#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9)
 - [最终生成代码](#%e6%9c%80%e7%bb%88%e7%94%9f%e6%88%90%e4%bb%a3%e7%a0%81)
 - [常见问题](#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98)
 - [Example](#example)
-
-## 2019/08/09 更新
-
-### 从pubspec.yaml文件中的依赖包自动生成路由代码
-
-感谢[@法的空间](https://juejin.im/user/5bdc1a32518825170b101080)网友的建议，新的版本支持从pubspec.yaml文件中的依赖包自动生成路由代码了。
-启用方法如下：
-
-1. 在需要支持从pubspec.yaml文件中的依赖包自动生成路由代码的项目根目录下，新建build.yaml文件，如果已经存在，则跳过这一步。
-
-2. 在文件中添加以下内容：
-
-    ```yaml
-    # If you are sure that you only run `flutter pub run build_runner build`,
-    # and don't run `flutter pub run build_runner watch`, then you can enable
-    # the following comment out content.
-    # targets:
-    #   $default:
-    #     builders:
-    #       route_generator|route_collector:
-    #         enabled: false
-
-    # If you also want to enable source code generation for the packages of
-    # dependencies in the pubspec.yaml, I think the following is what you need.
-    builders:
-      route_collector_all_packages:
-        import: 'package:route_generator/builder.dart'
-        builder_factories: ['routeCollectorAllPackages']
-        build_extensions: { '.dart': ['.collector_all_packages.dart'] }
-        auto_apply: all_packages
-        runs_before: ["route_generator|route_builder"]
-        build_to: cache
-    ```
-
-    注意相同key部分请合并。
-
-3. 重新运行build_runner command即可
-
-获取更详细信息，请参阅[example](https://github.com/microtears/route_generator_repo/tree/master/example)
-
-### 关于build_runner watch模式下的问题
-
-- 需要了解的是：pubspec.yaml dependencies packages 不支持watch模式持续生成路由代码（第一次生成依然是有效的），但是你任然可以在当前的application启用watch模式。后期考虑支持。
-
-- 由于BuildStep不支持同一文件的不同输出，即对于每一个文件，它的输出文件是限定了的，所以watch模式下，如果你修改了注解信息，那么你可能需要使Route注解所在的文件刷新一次(必须使文件出现改动，并且保存，例如添加空行)，才会重新生成xxx.route.dart。正在尽力解决，目前方案需要手动刷新一次，如果大家有更好的方案，欢迎提出。
 
 ## route_generator是什么
 
@@ -84,12 +38,12 @@
 ```yaml
 dependencies:
   # Your other regular dependencies here
-  route_annotation: ^0.1.0
+  route_annotation: ^0.2.0
 
 dev_dependencies:
   # Your other dev_dependencies here
   build_runner: ^1.5.0
-  route_generator: ^0.1.2
+  route_generator: ^0.1.4
 ```
 
 ## 生成代码
@@ -114,13 +68,21 @@ dev_dependencies:
 | `RoutePageBuilderFunction`       | 这个注解用来标识一个路由页面的 `RoutePageBuilder`静态方法                  |
 | `RouteTransitionBuilderFunction` | 这个注解用来标识一个路由页面的 `TransitionBuilder` 静态方法                |
 | `RouteTransitionDurationField`   | 这个注解用来标识一个自定义路由页面的过渡时长                               |
+| `router` **new**                 | 与`Router()`相同                                                           |
+| `page` **new**                   | 与`RoutePage()`相同                                                        |
+| `initialPage` **new**            | 与`RoutePage(isInitialRoute: true)`相同                                    |
+| `routeField` **new**             | 与`RouteField()`相同                                                       |
+| `routeBuilder` **new**           | 与`PageRouteBuilderFuntcion()`相同                                         |
+| `pageBuilder` **new**            | 与`RoutePageBuilderFunction()`相同                                         |
+| `transitionBuilder` **new**      | 与`RouteTransitionBuilderFunction()`相同                                   |
+| `transitionDuration` **new**     | 与`RouteTransitionDurationField()`相同                                     |
 
 ## 代码示例
 
 ### 定义路由 App
 
 ```dart
-@Router()
+@router
 class DemoApp extends StatefulWidget {
   @override
   _DemoAppState createState() => _DemoAppState();
@@ -140,8 +102,7 @@ class _DemoAppState extends State<DemoApp> {
 ### 定义路由页面
 
 ```dart
-// isInitialRoute为true表示它将作为initial page
-@RoutePage(isInitialRoute: true)
+@initialPage
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -226,9 +187,9 @@ class HomePage extends StatelessWidget {
 这种方法自定义路由的优先级最高，如果同时存在多种自定义路由选择，该种方案最先被选择。
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  @RouteField()
+  @routeField
   static Map<String, RouteFactory> route = <String, RouteFactory>{
     'custom_route': (RouteSettings settings) =>
         MaterialPageRoute(builder: (BuildContext context) => CustomRoutePage()),
@@ -255,9 +216,9 @@ Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
 这种方法自定义路由的优先级较低，如果同时存在多种自定义路由选择，则按优先级从大到小选择。
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  @PageRouteBuilderFuntcion()
+  @pageBuilder
   static Route buildPageRoute(RouteSettings settings) => PageRouteBuilder(
         pageBuilder: (BuildContext context, Animation animation,
                 Animation secondaryAnimation) =>
@@ -282,18 +243,18 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 这种方法自定义路由的优先级最低，如果同时存在多种自定义路由选择，则按优先级从大到小选择。
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  // RoutePageBuilderFunction注解表明这个方法用来定义如何返回RoutePage
+  // pageBuilder注解表明这个方法用来定义如何返回RoutePage
   // 它是可选的
-  @RoutePageBuilderFunction()
+  @pageBuilder
   static Widget buildPage(BuildContext context, Animation animation,
           Animation secondaryAnimation, RouteSettings settings) =>
       CustomRoutePage();
 
-  // RouteTransitionBuilderFunction注解表明这个方法用来定义如何应用动画过渡
+  // transitionBuilder注解表明这个方法用来定义如何应用动画过渡
   // 它是可选的
-  @RouteTransitionBuilderFunction()
+  @transitionBuilder
   static Widget buildTransitions(
           BuildContext context,
           Animation<double> animation,
@@ -302,10 +263,10 @@ class CustomRoutePage extends StatelessWidget {
           RouteSettings settings) =>
       child;
 
-  // RouteTransitionDurationField注解表明这个字段用来定义页面过渡时常长，默认值为300 milliseconds
+  // transitionDuration注解表明这个字段用来定义页面过渡时常长，默认值为300 milliseconds
   // 它是可选的
-  @RouteTransitionDurationField()
-  static Duration transitionDuration = Duration(milliseconds: 400);
+  @transitionDuration
+  static Duration transitionDurations = Duration(milliseconds: 400);
 
   ...
 
@@ -327,6 +288,46 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 };
 ```
 
+## 从pubspec.yaml文件中的依赖包自动生成路由代码
+
+1. 在需要支持从pubspec.yaml文件中的依赖包自动生成路由代码的项目根目录下，新建build.yaml文件，如果已经存在，则跳过这一步。
+
+2. 在文件中添加以下内容：
+
+    ```yaml
+    # If you are sure that you only run `flutter pub run build_runner build`,
+    # and don't run `flutter pub run build_runner watch`, then you can enable
+    # the following comment out content.
+    # targets:
+    #   $default:
+    #     builders:
+    #       route_generator|route_collector:
+    #         enabled: false
+
+    # If you also want to enable source code generation for the packages of
+    # dependencies in the pubspec.yaml, I think the following is what you need.
+    builders:
+      route_collector_all_packages:
+        import: 'package:route_generator/builder.dart'
+        builder_factories: ['routeCollectorAllPackages']
+        build_extensions: { '.dart': ['.collector_all_packages.dart'] }
+        auto_apply: all_packages
+        runs_before: ["route_generator|route_builder"]
+        build_to: cache
+    ```
+
+    注意相同key部分请合并。
+
+3. 重新运行build_runner command即可
+
+获取更详细信息，请参阅[example](https://github.com/microtears/route_generator_repo/tree/master/example)
+
+## 关于build_runner watch模式下的问题
+
+- 需要了解的是：pubspec.yaml dependencies packages 不支持watch模式持续生成路由代码（第一次生成依然是有效的），但是你任然可以在当前的application启用watch模式。后期考虑支持。
+
+- 由于BuildStep不支持同一文件的不同输出，即对于每一个文件，它的输出文件是限定了的，所以watch模式下，如果你修改了注解信息，那么你可能需要使Route注解所在的文件刷新一次(必须使文件出现改动，并且保存，例如添加空行)，才会重新生成xxx.route.dart。正在尽力解决，目前方案需要手动刷新一次，如果大家有更好的方案，欢迎提出。
+
 ## 注意事项
 
 - 只允许有一个initalRoute
@@ -346,43 +347,35 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 // **************************************************************************
 
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'custom_route_page.dart';
-import 'custom_route_name_page.dart';
-import 'second_page.dart';
-import 'one_arguement_page.dart';
-import 'two_arguement_page.dart';
+import 'package:example_library/example_library.dart';
+import 'package:example/custom_route_name_page.dart';
+import 'package:example/custom_route_page.dart';
+import 'package:example/home_page.dart';
+import 'package:example/one_arguement_page.dart';
+import 'package:example/two_arguement_page.dart';
+import 'package:example/second_page.dart';
 
-const ROUTE_HOME = '/';
-const ROUTE_CUSTOM_ROUTE_PAGE = 'custom_route_page';
+const ROUTE_LIBRARY_PAGE = 'library_page';
 const ROUTE_CUSTOM = 'custom';
-const ROUTE_SECOND_PAGE = 'second_page';
+const ROUTE_CUSTOM_ROUTE_PAGE = 'custom_route_page';
+const ROUTE_HOME = '/';
 const ROUTE_ONE_ARGUMENT_PAGE = 'one_argument_page';
 const ROUTE_TWO_ARGUMENT_PAGE = 'two_argument_page';
+const ROUTE_SECOND_PAGE = 'second_page';
 
 RouteFactory onGenerateRoute = (settings) => Map.fromEntries([
-      ..._home.entries,
-      ..._customRoutePage.entries,
+      ..._libraryPage.entries,
       ..._custom.entries,
-      ..._secondPage.entries,
+      ..._customRoutePage.entries,
+      ..._home.entries,
       ..._oneArgumentPage.entries,
       ..._twoArgumentPage.entries,
+      ..._secondPage.entries,
     ])[settings.name](settings);
 
-Map<String, RouteFactory> _home = <String, RouteFactory>{
-  '/': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => HomePage(),
-      ),
-};
-Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
-  'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CustomRoutePage.buildPage(
-                context, animation, secondaryAnimation, settings),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            CustomRoutePage.buildTransitions(
-                context, animation, secondaryAnimation, child, settings),
-        transitionDuration: CustomRoutePage.transitionDuration,
+Map<String, RouteFactory> _libraryPage = <String, RouteFactory>{
+  'library_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => LibraryPage(),
       ),
 };
 Map<String, RouteFactory> _custom = <String, RouteFactory>{
@@ -390,9 +383,10 @@ Map<String, RouteFactory> _custom = <String, RouteFactory>{
         builder: (BuildContext context) => CustomRoutePageName(),
       ),
 };
-Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
-  'second_page': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => SecondPage(),
+Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
+Map<String, RouteFactory> _home = <String, RouteFactory>{
+  '/': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => HomePage(),
       ),
 };
 Map<String, RouteFactory> _oneArgumentPage = <String, RouteFactory>{
@@ -403,11 +397,18 @@ Map<String, RouteFactory> _oneArgumentPage = <String, RouteFactory>{
 };
 Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
   'two_argument_page': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => TwoArgumentPage(
-              title: (settings.arguments as Map<String, dynamic>)['title'],
-              subTitle:
-                  (settings.arguments as Map<String, dynamic>)['subTitle'],
-            ),
+        builder: (BuildContext context) {
+          final arguments = settings.arguments as Map<String, dynamic>;
+          return TwoArgumentPage(
+            title: arguments['title'],
+            subTitle: arguments['subTitle'],
+          );
+        },
+      ),
+};
+Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
+  'second_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => SecondPage(),
       ),
 };
 
@@ -418,6 +419,12 @@ Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
 - 没有生成路由文件
   
   请检查是否添加了Router注解
+
+- 路由生成不完整
+  
+  请尝试运行以下命令：
+  - flutter pub run build_runner clean
+  - flutter pub run build_runner build
 
 ## Example
 

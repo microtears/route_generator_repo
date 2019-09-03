@@ -14,6 +14,8 @@
 - [Custom route (priority: 3)](#custom-route-priority-3)
 - [Custom route (priority: 2)](#custom-route-priority-2)
 - [Custom route (priority: 1)](#custom-route-priority-1)
+- [Automatically generate routing code from dependency packages in the pubspec.yaml file](#automatically-generate-routing-code-from-dependency-packages-in-the-pubspecyaml-file)
+- [About the problem in build_runner watch mode](#about-the-problem-in-buildrunner-watch-mode)
 - [Warning](#warning)
 - [Generated code](#generated-code)
 - [Common problem](#common-problem)
@@ -28,18 +30,19 @@ This is a route generation library.Only a small amount of code is required,then 
 - Custom route animations.
 - Custom route parameters.
 - Custom route logic.
+- Automatically generate routing code from dependency packages in the pubspec.yaml file
 
 ## Depend on it
 
 ```yaml
 dependencies:
   # Your other regular dependencies here
-  route_annotation: ^0.1.0
+  route_annotation: ^0.2.0
 
 dev_dependencies:
   # Your other dev_dependencies here
   build_runner: ^1.5.0
-  route_generator: ^0.1.2
+  route_generator: ^0.1.4
 ```
 
 ## Running the code generation utility
@@ -68,13 +71,21 @@ dev_dependencies:
 | `RoutePageBuilderFunction`       | This annotation is used to identify the `RoutePageBuilder` static  method of a routing page.                                                |
 | `RouteTransitionBuilderFunction` | This annotation is used to identify the `TransitionBuilder` static method of a routing page.                                                |
 | `RouteTransitionDurationField`   | This annotation is used to identify the transition time of a custom routing page.                                                           |
+| `router` **new**                 | Same as `Router()`                                                                                                                          |
+| `page` **new**                   | Same as `RoutePage()`                                                                                                                       |
+| `initialPage` **new**            | Same as `RoutePage(isInitialRoute: true)`                                                                                                   |
+| `routeField` **new**             | Same as `RouteField()`                                                                                                                      |
+| `routeBuilder` **new**           | Same as `PageRouteBuilderFuntcion()`                                                                                                        |
+| `pageBuilder` **new**            | Same as `RoutePageBuilderFunction()`                                                                                                        |
+| `transitionBuilder` **new**      | Same as `RouteTransitionBuilderFunction()`                                                                                                  |
+| `transitionDuration` **new**     | Same as `RouteTransitionDurationField()`                                                                                                    |
 
 ## Example code
 
 ### Define routing application
 
 ```dart
-@Router()
+@router
 class DemoApp extends StatefulWidget {
   @override
   _DemoAppState createState() => _DemoAppState();
@@ -94,8 +105,7 @@ class _DemoAppState extends State<DemoApp> {
 ### Define routing page
 
 ```dart
-// isInitialRoute is true to indicate that it will be used as the initial page
-@RoutePage(isInitialRoute: true)
+@initialPage
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -180,9 +190,9 @@ class HomePage extends StatelessWidget {
 This method has the highest priority for custom routing. If there are multiple custom routing options at the same time, this plan is selected first.
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  @RouteField()
+  @routeField
   static Map<String, RouteFactory> route = <String, RouteFactory>{
     'custom_route': (RouteSettings settings) =>
         MaterialPageRoute(builder: (BuildContext context) => CustomRoutePage()),
@@ -209,9 +219,9 @@ Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
 This method has a lower priority for custom routing. If there are multiple custom routing options at the same time, the plan is selected by priority from large to small.
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  @PageRouteBuilderFuntcion()
+  @pageBuilder
   static Route buildPageRoute(RouteSettings settings) => PageRouteBuilder(
         pageBuilder: (BuildContext context, Animation animation,
                 Animation secondaryAnimation) =>
@@ -236,20 +246,20 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 This method has the lowest priority for custom routing. If there are multiple custom routing options at the same time, the plan is selected by priority from large to small.
 
 ```dart
-@RoutePage()
+@page
 class CustomRoutePage extends StatelessWidget {
-  /// The RoutePageBuilderFunction annotation indicates that this method
+  /// The pageBuilder annotation indicates that this method
   /// is used to define how to return a RoutePage.
   /// It is optional
-  @RoutePageBuilderFunction()
+  @pageBuilder
   static Widget buildPage(BuildContext context, Animation animation,
           Animation secondaryAnimation, RouteSettings settings) =>
       CustomRoutePage();
 
-  /// The RouteTransitionBuilderFunction annotation indicates that this
+  /// The transitionBuilder annotation indicates that this
   /// method is used to define how to use animations.
   /// It is optional
-  @RouteTransitionBuilderFunction()
+  @transitionBuilder
   static Widget buildTransitions(
           BuildContext context,
           Animation<double> animation,
@@ -258,11 +268,11 @@ class CustomRoutePage extends StatelessWidget {
           RouteSettings settings) =>
       child;
 
-  /// The RouteTransitionDurationField annotation indicates that this
+  /// The transitionDuration annotation indicates that this
   /// field is used to define the length of the page transition. The
   /// default value is 300 milliseconds.
   /// It is optional
-  @RouteTransitionDurationField()
+  @transitionDuration
   static Duration transitionDuration = Duration(milliseconds: 400);
 
   ...
@@ -285,6 +295,46 @@ Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
 };
 ```
 
+## Automatically generate routing code from dependency packages in the pubspec.yaml file
+
+1. In the project root directory that needs to support automatic generation of routing code from the dependencies in the pubspec.yaml file, create a new build.yaml file, skip this step if it already exists.
+
+2. Add the following to the file:
+
+    ```yaml
+    # If you are sure that you only run `flutter pub run build_runner build`,
+    # and don't run `flutter pub run build_runner watch`, then you can enable
+    # the following comment out content.
+    # targets:
+    #   $default:
+    #     builders:
+    #       route_generator|route_collector:
+    #         enabled: false
+
+    # If you also want to enable source code generation for the packages of
+    # dependencies in the pubspec.yaml, I think the following is what you need.
+    builders:
+      route_collector_all_packages:
+        import: 'package:route_generator/builder.dart'
+        builder_factories: ['routeCollectorAllPackages']
+        build_extensions: { '.dart': ['.collector_all_packages.dart'] }
+        auto_apply: all_packages
+        runs_before: ["route_generator|route_builder"]
+        build_to: cache
+    ```
+
+    Note that the same key parts should be merged.
+
+3. Re-run the build_runner command
+
+For more details, please see [example](https://github.com/microtears/route_generator_repo/tree/master/example)
+
+## About the problem in build_runner watch mode
+
+- Need to know is: pubspec.yaml dependencies packages does not support watch mode to continuously generate routing code (the first generation is still valid), but you can still enable watch mode in the current application. Consider support later.
+
+- Since BuildStep does not support different output of the same file, that is, for each file, its output file is limited, so in watch mode, if you modify the annotation information, then you may need to refresh the file where the Route annotation is located (The file must be changed and saved, such as adding a blank line), to regenerate xxx.route.dart. We are trying our best to solve it. The current plan needs to be refreshed manually. If you have a better solution, please feel free to ask.
+
 ## Warning
 
 - Only one initalRoute is allowed
@@ -305,43 +355,35 @@ Where filename is the file name of the Application class annotated by Router.
 // **************************************************************************
 
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'custom_route_page.dart';
-import 'custom_route_name_page.dart';
-import 'second_page.dart';
-import 'one_arguement_page.dart';
-import 'two_arguement_page.dart';
+import 'package:example_library/example_library.dart';
+import 'package:example/custom_route_name_page.dart';
+import 'package:example/custom_route_page.dart';
+import 'package:example/home_page.dart';
+import 'package:example/one_arguement_page.dart';
+import 'package:example/two_arguement_page.dart';
+import 'package:example/second_page.dart';
 
-const ROUTE_HOME = '/';
-const ROUTE_CUSTOM_ROUTE_PAGE = 'custom_route_page';
+const ROUTE_LIBRARY_PAGE = 'library_page';
 const ROUTE_CUSTOM = 'custom';
-const ROUTE_SECOND_PAGE = 'second_page';
+const ROUTE_CUSTOM_ROUTE_PAGE = 'custom_route_page';
+const ROUTE_HOME = '/';
 const ROUTE_ONE_ARGUMENT_PAGE = 'one_argument_page';
 const ROUTE_TWO_ARGUMENT_PAGE = 'two_argument_page';
+const ROUTE_SECOND_PAGE = 'second_page';
 
 RouteFactory onGenerateRoute = (settings) => Map.fromEntries([
-      ..._home.entries,
-      ..._customRoutePage.entries,
+      ..._libraryPage.entries,
       ..._custom.entries,
-      ..._secondPage.entries,
+      ..._customRoutePage.entries,
+      ..._home.entries,
       ..._oneArgumentPage.entries,
       ..._twoArgumentPage.entries,
+      ..._secondPage.entries,
     ])[settings.name](settings);
 
-Map<String, RouteFactory> _home = <String, RouteFactory>{
-  '/': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => HomePage(),
-      ),
-};
-Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
-  'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CustomRoutePage.buildPage(
-                context, animation, secondaryAnimation, settings),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            CustomRoutePage.buildTransitions(
-                context, animation, secondaryAnimation, child, settings),
-        transitionDuration: CustomRoutePage.transitionDuration,
+Map<String, RouteFactory> _libraryPage = <String, RouteFactory>{
+  'library_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => LibraryPage(),
       ),
 };
 Map<String, RouteFactory> _custom = <String, RouteFactory>{
@@ -349,9 +391,10 @@ Map<String, RouteFactory> _custom = <String, RouteFactory>{
         builder: (BuildContext context) => CustomRoutePageName(),
       ),
 };
-Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
-  'second_page': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => SecondPage(),
+Map<String, RouteFactory> _customRoutePage = CustomRoutePage.route;
+Map<String, RouteFactory> _home = <String, RouteFactory>{
+  '/': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => HomePage(),
       ),
 };
 Map<String, RouteFactory> _oneArgumentPage = <String, RouteFactory>{
@@ -362,11 +405,18 @@ Map<String, RouteFactory> _oneArgumentPage = <String, RouteFactory>{
 };
 Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
   'two_argument_page': (RouteSettings settings) => MaterialPageRoute(
-        builder: (BuildContext context) => TwoArgumentPage(
-              title: (settings.arguments as Map<String, dynamic>)['title'],
-              subTitle:
-                  (settings.arguments as Map<String, dynamic>)['subTitle'],
-            ),
+        builder: (BuildContext context) {
+          final arguments = settings.arguments as Map<String, dynamic>;
+          return TwoArgumentPage(
+            title: arguments['title'],
+            subTitle: arguments['subTitle'],
+          );
+        },
+      ),
+};
+Map<String, RouteFactory> _secondPage = <String, RouteFactory>{
+  'second_page': (RouteSettings settings) => MaterialPageRoute(
+        builder: (BuildContext context) => SecondPage(),
       ),
 };
 
@@ -377,5 +427,11 @@ Map<String, RouteFactory> _twoArgumentPage = <String, RouteFactory>{
 - No file generated
   
   Please check if the Router annotation has been added
+
+- The generated route is incomplete
+  
+  Please try running the following command：
+  - flutter pub run build_runner clean
+  - flutter pub run build_runner build
 
 For more details, please see [example](https://github.com/microtears/route_generator_repo/tree/master/example)
