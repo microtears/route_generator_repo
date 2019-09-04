@@ -1,3 +1,7 @@
+## 0.1.4+2
+
+* Update document.
+
 ## 0.1.4
 
 * Remove unnecessary type conversions

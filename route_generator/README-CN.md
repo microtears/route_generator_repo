@@ -279,11 +279,12 @@ class CustomRoutePage extends StatelessWidget {
 Map<String, RouteFactory> _customRoutePage = <String, RouteFactory>{
   'custom_route_page': (RouteSettings settings) => PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            CustomRoutePage(),
+            CustomRoutePage.buildPage(
+                context, animation, secondaryAnimation, settings),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             CustomRoutePage.buildTransitions(
                 context, animation, secondaryAnimation, child, settings),
-        transitionDuration: CustomRoutePage.transitionDuration,
+        transitionDuration: CustomRoutePage.transitionDurations,
       ),
 };
 ```
