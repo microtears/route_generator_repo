@@ -7,7 +7,7 @@ packages:
       name: analyzer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.37.0"
+    version: "0.38.2"
   args:
     dependency: transitive
     description:
@@ -35,7 +35,7 @@ packages:
       name: build
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   build_config:
     dependency: transitive
     description:
@@ -56,7 +56,7 @@ packages:
       name: build_resolvers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.7"
   build_runner:
     dependency: "direct dev"
     description:
@@ -140,7 +140,7 @@ packages:
       name: dart_style
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.2.9"
+    version: "1.2.10"
   fixnum:
     dependency: transitive
     description:
@@ -164,7 +164,7 @@ packages:
       name: front_end
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.20"
+    version: "0.1.24"
   glob:
     dependency: transitive
     description:
@@ -234,7 +234,7 @@ packages:
       name: kernel
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.20"
+    version: "0.3.24"
   logging:
     dependency: transitive
     description:
@@ -269,7 +269,7 @@ packages:
       name: package_config
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.5"
+    version: "1.1.0"
   package_resolver:
     dependency: transitive
     description:
@@ -322,10 +322,10 @@ packages:
   route_annotation:
     dependency: "direct main"
     description:
-      path: "..\\route_annotation"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: route_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   shelf:
     dependency: transitive
     description:
@@ -351,7 +351,7 @@ packages:
       name: source_gen
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.9.4+3"
+    version: "0.9.4+4"
   source_span:
     dependency: transitive
     description:

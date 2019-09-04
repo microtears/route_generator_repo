@@ -77,10 +77,10 @@ packages:
   route_annotation:
     dependency: "direct main"
     description:
-      path: "..\\route_annotation"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: route_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -329,16 +329,16 @@ packages:
   route_annotation:
     dependency: "direct main"
     description:
-      path: "..\\route_annotation"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: route_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   route_generator:
     dependency: "direct dev"
     description:
-      path: "..\\route_generator"
-      relative: true
-    source: path
+      name: route_generator
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.1.4"
   shelf:
     dependency: transitive
