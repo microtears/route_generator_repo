@@ -55,7 +55,8 @@ class RouteGenerator extends Generator {
 
   String outputAsString() {
     perpare();
-    routes.forEach((route) {
+    final sorted = routes.toList()..sort((a, b) => a.name.compareTo(b.name));
+    sorted.forEach((route) {
       if (route.isInitialRoute) {
         if (hasInitialRoute == true) {
           throw UnsupportedError(
