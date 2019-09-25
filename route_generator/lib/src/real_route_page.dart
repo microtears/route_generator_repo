@@ -6,9 +6,9 @@ class RealRoutePage extends Object {
   String name;
   String className;
   bool isInitialRoute;
-  List<RealRouteParameter> prarms;
+  List<RealRouteParameter> params;
   String routeField;
-  String pageRouteBuilderFuntcion;
+  String pageRouteBuilderFunction;
   String routePageBuilderFunction;
   String routeTransitionBuilderFunction;
   String routeTransitionDurationField;
@@ -18,9 +18,9 @@ class RealRoutePage extends Object {
     this.className,
     this.name, {
     this.isInitialRoute = false,
-    this.prarms = const [],
+    this.params = const [],
     this.routeField,
-    this.pageRouteBuilderFuntcion,
+    this.pageRouteBuilderFunction,
     this.routePageBuilderFunction,
     this.routeTransitionBuilderFunction,
     this.routeTransitionDurationField,
@@ -34,28 +34,28 @@ class RealRoutePage extends Object {
     if (routeField != null) {
       return "Map<String, RouteFactory> _$routeVariableName = $className.$routeField;";
     }
-    if (pageRouteBuilderFuntcion != null) {
+    if (pageRouteBuilderFunction != null) {
       return "Map<String, RouteFactory> _$routeVariableName = "
-          "<String, RouteFactory>{'$routeName': $className.$pageRouteBuilderFuntcion,};";
+          "<String, RouteFactory>{'$routeName': $className.$pageRouteBuilderFunction,};";
     }
-    final prarm = _buildPrarmters();
+    final param = _buildParameters();
     if (routePageBuilderFunction == null &&
         routeTransitionBuilderFunction == null &&
         routeTransitionDurationField == null) {
-      if (prarms.length < 2) {
+      if (params.length < 2) {
         return "Map<String, RouteFactory> _$routeVariableName = "
             "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
-            "MaterialPageRoute(builder: (BuildContext context) => $className($prarm),),};";
+            "MaterialPageRoute(builder: (BuildContext context) => $className($param),),};";
       } else {
         return "Map<String, RouteFactory> _$routeVariableName = "
             "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
             "MaterialPageRoute(builder: (BuildContext context) {"
             "final arguments = settings.arguments as Map<String, dynamic>;"
-            "return $className($prarm);},),};";
+            "return $className($param);},),};";
       }
     }
     final page = routePageBuilderFunction == null
-        ? "pageBuilder: (context,animation,secondaryAnimation) => $className($prarm),"
+        ? "pageBuilder: (context,animation,secondaryAnimation) => $className($param),"
         : "pageBuilder: (context,animation,secondaryAnimation) => "
             "$className.$routePageBuilderFunction(context,animation,secondaryAnimation,settings),";
     final transitions = routeTransitionBuilderFunction == null
@@ -74,16 +74,16 @@ class RealRoutePage extends Object {
 
   String buildRouteEntries() => "..._$routeVariableName.entries,";
 
-  String _buildPrarmters() {
-    if (prarms.isEmpty) {
+  String _buildParameters() {
+    if (params.isEmpty) {
       return "";
-    } else if (prarms.length == 1) {
-      return "${prarms[0].name} : settings.arguments";
+    } else if (params.length == 1) {
+      return "${params[0].name} : settings.arguments";
     } else {
       final buffer = StringBuffer();
-      prarms.forEach((prarm) {
-        final key = prarm.key ?? prarm.name;
-        buffer.write("${prarm.name} : arguments['$key'],");
+      params.forEach((param) {
+        final key = param.key ?? param.name;
+        buffer.write("${param.name} : arguments['$key'],");
       });
       return buffer.toString();
     }

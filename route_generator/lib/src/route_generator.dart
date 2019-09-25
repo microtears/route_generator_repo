@@ -38,7 +38,7 @@ class RouteGenerator extends Generator {
     return null;
   }
 
-  void perpare() {
+  void prepare() {
     imports.add("import 'package:flutter/material.dart';");
     onGenerateRoute
         .add("RouteFactory onGenerateRoute = (settings) => Map.fromEntries([");
@@ -54,7 +54,7 @@ class RouteGenerator extends Generator {
   }
 
   String outputAsString() {
-    perpare();
+    prepare();
     final sorted = routes.toList()..sort((a, b) => a.name.compareTo(b.name));
     sorted.forEach((route) {
       if (route.isInitialRoute) {

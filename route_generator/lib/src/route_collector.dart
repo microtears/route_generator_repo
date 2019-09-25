@@ -9,7 +9,7 @@ import 'watch_state.dart';
 
 const TypeChecker routePageChecker = TypeChecker.fromRuntime(RoutePage);
 const TypeChecker routeGetterChecker = TypeChecker.fromRuntime(RouteField);
-const TypeChecker pageRouteBuilderFuntcionChecker =
+const TypeChecker pageRouteBuilderFunctionChecker =
     TypeChecker.fromRuntime(PageRouteBuilderFuntcion);
 const TypeChecker routePageBuilderFunctionChecker =
     TypeChecker.fromRuntime(RoutePageBuilderFunction);
@@ -55,7 +55,7 @@ class RouteCollector extends Generator {
     final peekName = annotation.peek("name")?.stringValue ?? "/$className";
     final routeName = isInitialRoute ? "home" : peekName;
 
-    List<RealRouteParameter> getPrarmters(ConstantReader value) {
+    List<RealRouteParameter> getParameters(ConstantReader value) {
       return value?.listValue
               ?.map((value) => RealRouteParameter(
                   value.getField("name").toStringValue(),
@@ -66,7 +66,7 @@ class RouteCollector extends Generator {
 
     final methods = classElement.methods;
     final fields = classElement.fields;
-    String findNeedStaticMethodName(
+    String findStaticMethodNameByType(
         List<MethodElement> methods, TypeChecker checker) {
       return methods
           .firstWhere(
@@ -76,7 +76,7 @@ class RouteCollector extends Generator {
           ?.displayName;
     }
 
-    String findNeedStaticFieldName(
+    String findStaticFieldNameByType(
         List<FieldElement> fields, TypeChecker checker) {
       return fields
           .firstWhere(
@@ -92,18 +92,18 @@ class RouteCollector extends Generator {
     String routeTransitionBuilderFunction;
     String routeTransitionDurationField;
 
-    routeField = findNeedStaticFieldName(fields, routeGetterChecker);
+    routeField = findStaticFieldNameByType(fields, routeGetterChecker);
     if (routeField == null)
       pageRouteBuilderFuntcion =
-          findNeedStaticMethodName(methods, pageRouteBuilderFuntcionChecker);
+          findStaticMethodNameByType(methods, pageRouteBuilderFunctionChecker);
 
     if (routeField == null && pageRouteBuilderFuntcion == null) {
       routePageBuilderFunction =
-          findNeedStaticMethodName(methods, routePageBuilderFunctionChecker);
-      routeTransitionBuilderFunction = findNeedStaticMethodName(
+          findStaticMethodNameByType(methods, routePageBuilderFunctionChecker);
+      routeTransitionBuilderFunction = findStaticMethodNameByType(
           methods, routeTransitionBuilderFunctionChecker);
-      routeTransitionDurationField =
-          findNeedStaticFieldName(fields, routeTransitionDurationGetterChecker);
+      routeTransitionDurationField = findStaticFieldNameByType(
+          fields, routeTransitionDurationGetterChecker);
     }
 
     return RealRoutePage(
@@ -111,9 +111,9 @@ class RouteCollector extends Generator {
       className,
       routeName,
       isInitialRoute: isInitialRoute,
-      prarms: getPrarmters(annotation.peek("params")),
+      params: getParameters(annotation.peek("params")),
       routeField: routeField,
-      pageRouteBuilderFuntcion: pageRouteBuilderFuntcion,
+      pageRouteBuilderFunction: pageRouteBuilderFuntcion,
       routePageBuilderFunction: routePageBuilderFunction,
       routeTransitionBuilderFunction: routeTransitionBuilderFunction,
       routeTransitionDurationField: routeTransitionDurationField,
