@@ -10,7 +10,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
-  route_annotation: ^0.2.0
+  route_annotation:
+    path: ../route_annotation
   example_library:
     path: ../example_library
 
@@ -18,7 +19,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.7.1
-  route_generator: ^0.1.4
+  route_generator:
+    path: ../route_generator
 
 flutter:
 

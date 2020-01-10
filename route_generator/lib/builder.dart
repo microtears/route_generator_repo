@@ -8,7 +8,7 @@ import 'package:source_gen/source_gen.dart';
 Builder routeBuilder(BuilderOptions options) =>
     LibraryBuilder(RouteGenerator(), generatedExtension: ".route.dart");
 Builder routeCollector(BuilderOptions options) =>
-    LibraryBuilder(RouteCollector(), generatedExtension: ".collector.dart");
+    LibraryBuilder(RouteCollector(), generatedExtension: ".rc.dart");
 Builder routeCollectorAllPackages(BuilderOptions options) =>
     LibraryBuilder(RouteCollector(),
         generatedExtension: ".collector_all_packages.dart");

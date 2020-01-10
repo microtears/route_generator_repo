@@ -26,8 +26,20 @@ class RealRoutePage extends Object {
     this.routeTransitionDurationField,
   });
 
+  @override
+  String toString() {
+    return "$runtimeType(import: $import,name: $name,"
+        "className: $className,isInitialRoute: $isInitialRoute,"
+        "routeField: $routeField,pageRouteBuilderFunction: $pageRouteBuilderFunction,"
+        "routePageBuilderFunction: $routePageBuilderFunction,routeTransitionBuilderFunction: $routeTransitionBuilderFunction,"
+        "routeTransitionDurationField: $routeTransitionDurationField,"
+        "params: ${params.join(",")})";
+  }
+
   String get routeVariableName => normalizeName(name);
+
   String get routeConstantName => formatLC2UU(routeVariableName);
+
   String get routeName => isInitialRoute ? "/" : formatLC2LU(routeVariableName);
 
   String buildRoute() {

@@ -27,6 +27,7 @@ class RouteCollector extends Generator {
     fileRoutes.putIfAbsent(inputId, () => {});
     final previous = Set<RealRoutePage>.from(fileRoutes[inputId]);
     fileRoutes[inputId].clear();
+    final routesTemp = <RealRoutePage>{};
     for (var annotatedElement in library.annotatedWith(routePageChecker)) {
       final className = annotatedElement.element.displayName;
       final path = buildStep.inputId.path;
@@ -36,6 +37,7 @@ class RouteCollector extends Generator {
       final route =
           resolveRoutePage(classElement, annotatedElement.annotation, import);
       routes.add(route);
+      routesTemp.add(route);
       fileRoutes[inputId].add(route);
     }
     rewrite = true;
@@ -44,7 +46,12 @@ class RouteCollector extends Generator {
       final differences = previous.difference(current);
       routes.removeAll(differences.toList());
     }
-    return null;
+
+    return '''
+    /*
+    ${routesTemp.join()}
+    */
+    ''';
   }
 
   RealRoutePage resolveRoutePage(

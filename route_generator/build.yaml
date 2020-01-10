@@ -8,8 +8,8 @@ builders:
   route_collector:
     import: 'package:route_generator/builder.dart'
     builder_factories: ['routeCollector']
-    build_extensions: { '.dart': ['route_generator.collector.dart'] }
+    build_extensions: { '.dart': ['*.rc.dart'] }
     auto_apply: dependents
     applies_builders: ["route_generator|route_builder"]
     runs_before: ["route_generator|route_builder"]
-    build_to: cache
+    build_to: source
