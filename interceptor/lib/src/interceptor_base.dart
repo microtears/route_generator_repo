@@ -1,6 +1,7 @@
 abstract class Chain<I, O> {
-  factory Chain(I input, List<Interceptor<I, O>> interceptors) {
-    return _ChainImpl(input, interceptors);
+  factory Chain(I input, List<Interceptor<I, O>> interceptors,
+      O Function(I input) builder) {
+    return _ChainImpl(input, interceptors..add(_InterceptorImpl(builder)));
   }
 
   I get input;
@@ -13,8 +14,9 @@ abstract class Interceptor<I, O> {
 }
 
 class _ChainImpl<I, O> implements Chain<I, O> {
-  const _ChainImpl(this._input, this._interceptors, {int index = 0})
-      : _index = index;
+  _ChainImpl(this._input, this._interceptors, {int index = 0}) : _index = index;
+
+  bool processed = false;
 
   final I _input;
 
@@ -27,16 +29,18 @@ class _ChainImpl<I, O> implements Chain<I, O> {
 
   @override
   O process(I data) {
+    if (processed) {
+      throw StateError('The process function can only called once.');
+    }
+    processed = true;
     final next = _ChainImpl(data, _interceptors, index: _index + 1);
     final interceptor = _interceptors[_index];
     return interceptor.intercept(next);
   }
-
-
 }
 
-class InterceptorImpl<I, O> implements Interceptor<I, O> {
-  InterceptorImpl(this.builder);
+class _InterceptorImpl<I, O> implements Interceptor<I, O> {
+  _InterceptorImpl(this.builder);
 
   final O Function(I input) builder;
 

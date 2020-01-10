@@ -1,13 +1,12 @@
 import 'package:interceptor/interceptor.dart';
 
 void main() {
-  var interceptors = <Interceptor<String,String>>[
+  var interceptors = <Interceptor<String, String>>[
     SimpleInterceptor1(),
     SimpleInterceptor2(),
     SimpleInterceptor3(),
-    InterceptorImpl((e) => e),
   ];
-  var chain = Chain<String, String>('string', interceptors);
+  var chain = Chain<String, String>('string', interceptors, (e) => e);
 
   var data = chain.process(chain.input);
 
@@ -16,7 +15,8 @@ void main() {
 
 String interceptWith<T>(Chain<String, String> chain) {
   print('intercept with $T: ${chain.input}');
-  var data = chain.process(chain.input);
+  var input = chain.input + '/' + T.toString();
+  var data = chain.process(input);
   print('process with $T: $data');
   return data;
 }
