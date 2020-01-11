@@ -1,0 +1,6 @@
+**/*.iml
+**/*.packages
+**/*.lock
+**/*.DS_Store
+**/Flutter/flutter_export_environment.sh
+**/.idea
