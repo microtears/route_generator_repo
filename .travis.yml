@@ -2,18 +2,21 @@ sudo: required
 language: android
 dist: trusty
 jdk: oraclejdk8
+branches:
+  only:
+    - master
 android:
   components:
-  - tools
-  - platform-tools
-  - build-tools
-  - android-28 - extra-android-support
-  - extra-google-google_play_services
-  - extra-android-m2repository
-  - extra-google-m2repository
-  - addon-google_apis-google-28
-  - sys-img-armeabi-v7a-google_apis-28
-  - extra-google-android-support
+    - tools
+    - platform-tools
+    - build-tools
+    - android-28 - extra-android-support
+    - extra-google-google_play_services
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - addon-google_apis-google-28
+    - sys-img-armeabi-v7a-google_apis-28
+    - extra-google-android-support
 git:
   depth: 1
 before_cache:
@@ -24,24 +27,21 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
-    - "$HOME/.pub-cache"
-
-
+    - $HOME/.pub-cache
 before_install:
-- touch $HOME/.android/repositories.cfg
-- yes | sdkmanager "platforms;android-28"
-- yes | sdkmanager "build-tools;28.0.3"
-- git clone -b master https://github.com/flutter/flutter.git
-- export PATH="$PATH:$PWD/flutter/bin/"
-- flutter channel master
-- flutter upgrade
-- wget http://services.gradle.org/distributions/gradle-4.10.2-all.zip
-- unzip gradle-4.10.2-all.zip
-- export GRADLE_HOME=$PWD/gradle-4.10.2-all
-- export PATH=$GRADLE_HOME/bin:$PATH
+  - touch $HOME/.android/repositories.cfg
+  - yes | sdkmanager "platforms;android-28"
+  - yes | sdkmanager "build-tools;28.0.3"
+  - git clone https://github.com/flutter/flutter.git
+  - export PATH="$PATH:$PWD/flutter/bin/"
+  - flutter channel stable
+  - flutter precache
+  - wget http://services.gradle.org/distributions/gradle-4.10.2-all.zip
+  - unzip gradle-4.10.2-all.zip
+  - export GRADLE_HOME=$PWD/gradle-4.10.2-all
+  - export PATH=$GRADLE_HOME/bin:$PATH
 script:
-- "flutter upgrade"
-- "cd ./example/"
-- "flutter pub get"
-- "flutter pub run build_runner clean"
-- "flutter pub run build_runner build --delete-conflicting-outputs"
+  - "cd ./example/"
+  - "flutter pub get"
+  - "flutter pub run build_runner clean"
+  - "flutter pub run build_runner build --delete-conflicting-outputs"
