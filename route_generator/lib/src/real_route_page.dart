@@ -1,17 +1,13 @@
 import 'real_route_paramemter.dart';
+import 'string_case.dart';
 import 'util.dart';
 
-class RealRoutePage extends Object {
+class RealRoutePage {
   String import;
   String name;
   String className;
   bool isInitialRoute;
   List<RealRouteParameter> params;
-  String routeField;
-  String pageRouteBuilderFunction;
-  String routePageBuilderFunction;
-  String routeTransitionBuilderFunction;
-  String routeTransitionDurationField;
 
   RealRoutePage(
     this.import,
@@ -19,72 +15,34 @@ class RealRoutePage extends Object {
     this.name, {
     this.isInitialRoute = false,
     this.params = const [],
-    this.routeField,
-    this.pageRouteBuilderFunction,
-    this.routePageBuilderFunction,
-    this.routeTransitionBuilderFunction,
-    this.routeTransitionDurationField,
   });
 
   @override
   String toString() {
     return "$runtimeType(import: $import,name: $name,"
         "className: $className,isInitialRoute: $isInitialRoute,"
-        "routeField: $routeField,pageRouteBuilderFunction: $pageRouteBuilderFunction,"
-        "routePageBuilderFunction: $routePageBuilderFunction,routeTransitionBuilderFunction: $routeTransitionBuilderFunction,"
-        "routeTransitionDurationField: $routeTransitionDurationField,"
         "params: ${params.join(",")})";
   }
 
   String get routeVariableName => normalizeName(name);
 
-  String get routeConstantName => formatLC2UU(routeVariableName);
+  String get routeConstantName => format(
+      routeVariableName, CaseFormat.LOWER_CAMEL, CaseFormat.UPPER_UNDERSCORE);
 
-  String get routeName => isInitialRoute ? "/" : formatLC2LU(routeVariableName);
-
-  String buildRoute() {
-    if (routeField != null) {
-      return "Map<String, RouteFactory> _$routeVariableName = $className.$routeField;";
-    }
-    if (pageRouteBuilderFunction != null) {
-      return "Map<String, RouteFactory> _$routeVariableName = "
-          "<String, RouteFactory>{'$routeName': $className.$pageRouteBuilderFunction,};";
-    }
-    final param = _buildParameters();
-    if (routePageBuilderFunction == null &&
-        routeTransitionBuilderFunction == null &&
-        routeTransitionDurationField == null) {
-      if (params.length < 2) {
-        return "Map<String, RouteFactory> _$routeVariableName = "
-            "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
-            "MaterialPageRoute(builder: (BuildContext context) => $className($param),),};";
-      } else {
-        return "Map<String, RouteFactory> _$routeVariableName = "
-            "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
-            "MaterialPageRoute(builder: (BuildContext context) {"
-            "final arguments = settings.arguments as Map<String, dynamic>;"
-            "return $className($param);},),};";
-      }
-    }
-    final page = routePageBuilderFunction == null
-        ? "pageBuilder: (context,animation,secondaryAnimation) => $className($param),"
-        : "pageBuilder: (context,animation,secondaryAnimation) => "
-            "$className.$routePageBuilderFunction(context,animation,secondaryAnimation,settings),";
-    final transitions = routeTransitionBuilderFunction == null
-        ? ""
-        : "transitionsBuilder: (context,animation,secondaryAnimation,child) => "
-            "$className.$routeTransitionBuilderFunction(context,animation,secondaryAnimation,child,settings),";
-    final duration = routeTransitionDurationField == null
-        ? ""
-        : "transitionDuration: $className.$routeTransitionDurationField,";
-    return "Map<String, RouteFactory> _$routeVariableName = "
-        "<String, RouteFactory>{'$routeName': (RouteSettings settings) => "
-        "PageRouteBuilder($page$transitions$duration),};";
-  }
+  String get routeName => isInitialRoute
+      ? "/"
+      : format(routeVariableName, CaseFormat.LOWER_CAMEL,
+          CaseFormat.LOWER_UNDERSCORE);
 
   String buildRouteName() => "const ROUTE_$routeConstantName = '$routeName';";
 
-  String buildRouteEntries() => "..._$routeVariableName.entries,";
+  String buildRouteEntries() => '''
+  ROUTE_$routeConstantName: (RouteSettings settings) => MaterialPageRoute(
+    builder: (BuildContext context) {${params.length > 1 ? "final arguments = settings.arguments as Map<String, dynamic>;\n" : ""}
+      return $className(${_buildParameters()});
+    },
+  ),   
+''';
 
   String _buildParameters() {
     if (params.isEmpty) {
@@ -100,11 +58,4 @@ class RealRoutePage extends Object {
       return buffer.toString();
     }
   }
-
-  @override
-  bool operator ==(other) =>
-      other is RealRoutePage && routeName == other.routeName;
-
-  @override
-  int get hashCode => routeName.hashCode;
 }

@@ -1,14 +1,6 @@
 library route_generator.builder;
 
 import 'package:build/build.dart';
-import 'package:route_generator/src/route_collector.dart';
-import 'package:route_generator/src/route_generator.dart';
-import 'package:source_gen/source_gen.dart';
+import 'package:route_generator/src/route_builder.dart';
 
-Builder routeBuilder(BuilderOptions options) =>
-    LibraryBuilder(RouteGenerator(), generatedExtension: ".route.dart");
-Builder routeCollector(BuilderOptions options) =>
-    LibraryBuilder(RouteCollector(), generatedExtension: ".rc.dart");
-Builder routeCollectorAllPackages(BuilderOptions options) =>
-    LibraryBuilder(RouteCollector(),
-        generatedExtension: ".collector_all_packages.dart");
+Builder routeBuilder(BuilderOptions options) => RouteBuilder();
