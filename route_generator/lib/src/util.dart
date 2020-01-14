@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:route_generator/src/string_case.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Convert [name] to LOWER_CAMEL style
