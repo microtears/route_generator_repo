@@ -38,7 +38,7 @@ class RealRoutePage {
 
   String buildRouteEntries() => '''
   ROUTE_$routeConstantName: (RouteSettings settings) => MaterialPageRoute(
-    builder: (BuildContext context) {${params.length > 1 ? "final arguments = settings.arguments as Map<String, dynamic>;\n" : ""}
+    builder: (BuildContext context) {${params.length > 1 ? "\n      final arguments = settings.arguments as Map<String, dynamic>;" : ""}
       return $className(${_buildParameters()});
     },
   ),   

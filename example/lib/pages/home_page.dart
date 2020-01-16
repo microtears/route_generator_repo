@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:route_annotation/route_annotation.dart';
 
-import 'app.route.dart';
+import '../app.route.dart';
+
 
 @initialPage
 class HomePage extends StatelessWidget {

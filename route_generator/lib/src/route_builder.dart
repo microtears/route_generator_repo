@@ -18,6 +18,7 @@ class RouteBuilder implements Builder {
 
   @override
   Future build(BuildStep buildStep) async {
+    print("inputId: ${buildStep.inputId.path}");
     final resolver = buildStep.resolver;
     if (!await resolver.isLibrary(buildStep.inputId)) return;
     final lib = await buildStep.inputLibrary;
@@ -34,7 +35,7 @@ class RouteBuilder implements Builder {
 
   Future<String> _generate(LibraryReader reader, BuildStep buildStep) async {
     List<RealRoutePage> routes = [];
-    final pattern = '*/*.dart';
+    final pattern = '**/*.dart';
     final assetIds = await buildStep.findAssets(Glob(pattern)).toList()
       ..sort();
     final resolver = buildStep.resolver;
