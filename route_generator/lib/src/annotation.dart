@@ -1,20 +1,22 @@
-import 'real_route_paramemter.dart';
+import 'package:route_annotation/route_annotation.dart';
+
 import 'string_case.dart';
 import 'util.dart';
 
-class RealRoutePage {
-  String import;
-  String name;
-  String className;
-  bool isInitialRoute;
-  List<RealRouteParameter> params;
+class ActualRouteParam extends RouteParam {
+  ActualRouteParam(String name, {String key}) : super(name, key: key);
+}
 
-  RealRoutePage(
+class ActualRoute extends Route implements Comparable<ActualRoute> {
+  String import;
+  String className;
+
+  ActualRoute(
     this.import,
     this.className,
-    this.name, {
-    this.isInitialRoute = false,
-    this.params = const [],
+    String name, {
+    bool isInitialRoute = false,
+    List<ActualRouteParam> params = const [],
   });
 
   @override
@@ -34,7 +36,10 @@ class RealRoutePage {
       : format(routeVariableName, CaseFormat.LOWER_CAMEL,
           CaseFormat.LOWER_UNDERSCORE);
 
-  String buildRouteName() => "const ROUTE_$routeConstantName = '$routeName';";
+  String get routeNameStatement =>
+      "const ROUTE_$routeConstantName = '$routeName';";
+
+  String get routeStatement => "const ROUTE_$routeConstantName = '$routeName';";
 
   String buildRouteEntries() => '''
   ROUTE_$routeConstantName: (RouteSettings settings) => MaterialPageRoute(
@@ -57,5 +62,10 @@ class RealRoutePage {
       });
       return buffer.toString();
     }
+  }
+
+  @override
+  int compareTo(ActualRoute other) {
+    return name.compareTo(other.name);
   }
 }

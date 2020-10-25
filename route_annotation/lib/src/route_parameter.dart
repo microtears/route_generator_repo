@@ -1,4 +1,4 @@
-class RouteParameter {
+class RouteParam {
   /// [key] If you pass multiple parameters at a time, you must provide
   ///  a Map Key to take the parameters from [RouteSettings.arguments],
   /// and when you use [Navigator] to switch routes, the parameters must
@@ -70,5 +70,5 @@ class RouteParameter {
   ///   }
   /// }
   /// ```
-  const RouteParameter(this.name, {this.key}) : assert(name != null);
+  const RouteParam(this.name, {this.key}) : assert(name != null);
 }

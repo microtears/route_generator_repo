@@ -3,12 +3,16 @@ description: The route_annotation library is annotated with the route_generator 
 version: 0.2.1
 author: microtears <microtears@gmail.com>
 homepage: https://github.com/microtears/route_generator_repo
+publish_to: none
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
+  interceptor: ^0.0.1
 
-dev_dependencies:
+dependency_overrides:
+  interceptor:
+    path: ../interceptor
 
 flutter:

@@ -1,18 +1,18 @@
 library route_annotation;
 
-export 'src/route.dart';
-export 'src/route_page.dart';
-export 'src/route_parameter.dart';
-export 'src/interceptor.dart';
-
-import 'src/route.dart';
-import 'src/route_page.dart';
+import 'src/app_route.dart';
 import 'src/interceptor.dart';
+import 'src/route.dart';
 
-const router = Router();
+export 'src/app_route.dart';
+export 'src/interceptor.dart';
+export 'src/route.dart';
+export 'src/route_parameter.dart';
 
-const page = RoutePage();
+const appRouter = AppRouter();
 
-const initialPage = RoutePage(isInitialRoute: true);
+const route = Route();
+
+const initialRoute = Route(isInitialRoute: true);
 
 const interceptor = Interceptor();

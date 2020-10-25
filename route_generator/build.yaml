@@ -2,6 +2,6 @@ builders:
   route_builder:
     import: "package:route_generator/builder.dart"
     builder_factories: ["routeBuilder"]
-    build_extensions: { ".dart": ["*.route.dart"] }
+    build_extensions: { ".dart": ["*.app_route.dart"] }
     auto_apply: all_packages
     build_to: source
